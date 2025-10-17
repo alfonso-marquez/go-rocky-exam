@@ -36,10 +36,8 @@ export default function TagFormDialog() {
 
         const tags = await res.json();
         setTags(tags.map((tag: TagInterface) => ({ ...tag, selected: false })));
-
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      } catch (error: any) {
-        console.error("Error creating tag:", error.message);
+      } catch (error) {
+        console.error(error instanceof Error ? error.message : "Unknown error");
       }
     };
     fetchTags();
@@ -68,11 +66,8 @@ export default function TagFormDialog() {
 
       // Optionally update local state to show the new tag
       setTags((prev: TagInterface[]) => [...prev, ...newTag]);
-
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    } catch (error: any) {
-      console.error("Error creating tag:", error.message);
-      // Optionally show toast or alert
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setLoading(false);
       setName("");

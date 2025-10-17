@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client"; // your Supabase client
 import Image from "next/image";
 import AddPhotoDialog from "../photo/AddPhotoDialog";
+import { Photo } from "../photo/types";
 
-export default function AlbumPreview({ initialAlbum, albumId }: any) {
+export default function AlbumPreview({ albumId }: { albumId: number }) {
   // change type
-  const [album, setAlbum] = useState(initialAlbum); // update
-  const [photos, setPhotos] = useState<any[]>([]); // change type
+  const [photos, setPhotos] = useState<Photo[]>([]); // change type
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,8 +33,7 @@ export default function AlbumPreview({ initialAlbum, albumId }: any) {
     fetchPhotos();
   }, [albumId]);
 
-  // ✅ Callback for newly added photo
-  const handlePhotoAdded = (newPhoto: any) => {
+  const handlePhotoAdded = (newPhoto: Photo) => {
     // change type
     setPhotos((prev) => [newPhoto, ...prev]);
   };
@@ -58,7 +57,7 @@ export default function AlbumPreview({ initialAlbum, albumId }: any) {
           >
             <Image
               src={photo.url}
-              alt={photo.title || "Photo"}
+              alt={photo.name || "Photo"}
               fill
               className="object-cover transition-transform duration-300 hover:scale-105"
             />

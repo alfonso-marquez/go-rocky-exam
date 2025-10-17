@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 import { IconFolderCode } from "@tabler/icons-react";
@@ -35,7 +35,7 @@ export default function AlbumList() {
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
-  const fetchAlbums = async () => {
+  const fetchAlbums = useCallback(async () => {
     setLoading(true);
     try {
       const {
@@ -60,7 +60,7 @@ export default function AlbumList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [supabase]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this album?")) return;
@@ -70,7 +70,7 @@ export default function AlbumList() {
 
   useEffect(() => {
     fetchAlbums();
-  }, []);
+  }, [fetchAlbums]);
 
   return (
     <div className="container mx-auto p-6">

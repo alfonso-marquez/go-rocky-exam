@@ -9,8 +9,8 @@ export default async function AlbumPreviewPage({
   params: Promise<{ id: string }>;
 }) {
   // Handle await params NextJS
-  const albumId = (await params).id;
-  const album = await getAlbum(Number(albumId));
+  const albumId = Number((await params).id);
+  const album = await getAlbum(albumId);
 
   return (
     <>
@@ -26,7 +26,7 @@ export default async function AlbumPreviewPage({
           <div className="mt-6">
             <Card className="w-full min-w-[300px] shadow-sm">
               <CardContent>
-                <AlbumPreview initialAlbum={album} albumId={albumId} />
+                <AlbumPreview albumId={albumId} />
               </CardContent>
             </Card>
           </div>

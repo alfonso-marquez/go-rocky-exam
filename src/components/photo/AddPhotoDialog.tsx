@@ -25,6 +25,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Photo } from "./types";
 
 // Zod Schema for Validation
 const noFutureDateString = z
@@ -59,7 +60,7 @@ export default function AddPhotoDialog({
   onPhotoAdded,
 }: {
   albumId: string;
-  onPhotoAdded?: (photo: any) => void; // change type
+  onPhotoAdded?: (photo: Photo) => void; // change type
 }) {
   const [loading, setLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);

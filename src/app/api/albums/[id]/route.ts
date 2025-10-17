@@ -16,8 +16,11 @@ const GET = async ({ params }: Params) => {
     const album = await getAlbum(Number(params.id)); // ✅ uses lib helper
 
     return NextResponse.json(album, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 };
 

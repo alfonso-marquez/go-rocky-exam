@@ -97,9 +97,8 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
 
       // ✅ Optional success feedback
       console.log("Album saved successfully:", data);
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    } catch (err: any) {
-      console.error("Error saving album:", err.message);
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {
       setLoading(false);
       setOpen(false);

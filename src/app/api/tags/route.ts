@@ -6,8 +6,11 @@ const GET = async () => {
   try {
     const tags = await getTags();
     return NextResponse.json(tags, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 };
 
@@ -33,8 +36,11 @@ const POST = async (req: Request) => {
   try {
     const data = await createTag(name);
     return NextResponse.json(data, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 };
 
@@ -60,8 +66,11 @@ const PATCH = async (req: Request) => {
   try {
     const data = await updateTag(id, name);
     return NextResponse.json(data, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 };
 
@@ -84,8 +93,11 @@ const DELETE = async (req: Request) => {
   try {
     const data = await deleteTag(id);
     return NextResponse.json(data, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 };
 
