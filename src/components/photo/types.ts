@@ -8,4 +8,5 @@ export interface Photo {
   url: string;
   album_id: number;
   user_id: string;
+  created_at: string | number | Date;
 }

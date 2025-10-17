@@ -84,8 +84,11 @@ interface AddPhotoDialogProps {
 
 export default function AddPhotoDialog({
   albumId,
-}: AddPhotoDialogProps) {
-  //research this!
+  onPhotoAdded,
+}: {
+  albumId: string
+  onPhotoAdded?: (photo: any) => void
+}) {
   const [loading, setLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -104,15 +107,6 @@ export default function AddPhotoDialog({
     if (!file) return;
     setIsUploading(true);
     setLoading(true);
-
-
-
-
-
-
-
-
-
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -124,6 +118,13 @@ export default function AddPhotoDialog({
         method: "POST",
         body: formData,
       });
+
+      const data = await res.json();
+      // Add new photo to album list immediately
+      if (data?.photo) {
+        console.log("Inserted photo:", data.photo);
+        onPhotoAdded?.(data.photo); // This now works
+      }
 
       setOpen(false);
       form.reset();

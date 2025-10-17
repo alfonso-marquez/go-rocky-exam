@@ -49,7 +49,7 @@ export default function EditFormDialog({
         description: z
             .string()
             .min(1, "Description must be at least 1 character.")
-            .max(100, "Description must be at most 100 characters."),
+            .max(500, "Description must be at most 500 characters."),
     })
 
     const form = useForm<z.infer<typeof formSchema>>({

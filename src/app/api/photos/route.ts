@@ -42,18 +42,22 @@ export const POST = async (req: Request) => {
     .getPublicUrl(filePath);
 
   // Insert photo record
-  const { error: dbError } = await supabase.from("photos").insert({
-    title,
-    description,
-    album_id: albumId,
-    user_id: user.id,
-    url: publicUrlData.publicUrl,
-    created_at: createdAt,
-  });
+  const { data: photo, error: dbError } = await supabase
+    .from("photos")
+    .insert({
+      title,
+      description,
+      album_id: albumId,
+      user_id: user.id,
+      url: publicUrlData.publicUrl,
+      created_at: createdAt,
+    })
+    .select()
+    .single();
 
   if (dbError) {
     return NextResponse.json({ error: dbError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, photo });
 };
