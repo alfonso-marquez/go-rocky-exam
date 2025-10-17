@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./ui/button";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type NavbarProps = {
   user: {
@@ -25,10 +25,16 @@ type NavbarProps = {
 
 export function Navbar({ user }: NavbarProps) {
   const supabase = createClient();
+  const router = useRouter();
 
   const redirectToLogin = async () => {
-    await supabase.auth.signOut();
-    redirect("/login");
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      // Navigate to login
+      router.push("/login");
+      // Refresh the server components after redirect
+      router.refresh();
+    }
   };
 
   return (
@@ -64,7 +70,7 @@ export function Navbar({ user }: NavbarProps) {
                   <ul className="grid w-[200px] gap-4">
                     <li>
                       <NavigationMenuLink asChild>
-                        <Link href="my-profile">My Profile</Link>
+                        <Link href="profile">My Profile</Link>
                       </NavigationMenuLink>
                       <NavigationMenuLink asChild>
                         <Button

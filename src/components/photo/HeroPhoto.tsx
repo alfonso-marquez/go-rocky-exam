@@ -1,6 +1,7 @@
 import { Button } from "../ui/button";
 
-export default function HeroPhoto() {
+export default function HeroPhoto({ isAuthenticated }: { isAuthenticated: boolean }) {
+  console.log("isAuthenticated", isAuthenticated);
   return (
     <section className="py-32">
       <div className="container text-center">
@@ -11,7 +12,7 @@ export default function HeroPhoto() {
           </p>
         </div>
         <Button asChild size="lg" className="mt-10">
-          <a href="/albums">Uplod your photo</a>
+          <a href="/albums">{isAuthenticated ? "Upload your photo" : "Sign in to share your photos"}</a>
         </Button>
       </div>
     </section>

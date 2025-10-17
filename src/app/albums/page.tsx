@@ -14,14 +14,14 @@ export default async function Albums() {
   }
   return (
     <>
-      <div className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 max-w-7xl mx-auto">
+      <div className="flex flex-col items-center  p-8 pb-20 gap-16 sm:p-20 max-w-7xl mx-auto">
         <div className="mx-auto my-30 w-full max-w-6xl">
           <Card>
-            <div className="flex flex-1 items-center px-10">
-              <h1 className="text-3xl font-semibold mt-4 md:mb-2 md:text-4xl">
+            <div className="flex items-center justify-center px-10 gap-4">
+              <h1 className="text-2xl md:text-3xl font-semibold md:mb-2">
                 My Albums
               </h1>
-              <div className="ml-auto flex gap-2">
+              <div className="flex gap-2 ml-auto">
                 <TagFormDialog />
                 <AlbumFormDialog />
               </div>
@@ -32,6 +32,7 @@ export default async function Albums() {
           </Card>
         </div>
       </div>
+
     </>
   );
 }

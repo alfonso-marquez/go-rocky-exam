@@ -36,7 +36,7 @@ export default function PhotoList() {
   return (
     <section id="photo-list">
       <div className="flex justify-center mt-6 ">
-        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {loading && <p>Loading...</p>}
           {photos.length === 0 ? (
             <div>
