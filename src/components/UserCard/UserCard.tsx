@@ -6,16 +6,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { getUsers, User } from "@/lib/users";
+import { getUsers, Profile } from "@/lib/users";
 
 export default function UserCard() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [profiles, setProfile] = useState<Profile[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const usersData = await getUsers();
-                setUsers(usersData);
+                setProfile(usersData);
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
@@ -24,12 +24,12 @@ export default function UserCard() {
     }, []);
 
     return (
-        users.map(user => (
-            <Card className="w-full max-w-sm" key={user.id}>
+        profiles.map(profile => (
+            <Card className="w-full max-w-sm" key={profile.id}>
                 <CardHeader>
-                    <CardTitle>{user.first_name} {user.last_name}</CardTitle>
+                    <CardTitle>{profile.first_name} {profile.last_name}</CardTitle>
                     <CardDescription>
-                        {user.email}
+                        {profile.email}
                     </CardDescription>
                 </CardHeader>
             </Card>
