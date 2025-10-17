@@ -26,7 +26,7 @@ type NavbarProps = {
 export function Navbar({ user }: NavbarProps) {
   const supabase = createClient();
 
-  const handleLogout = async () => {
+  const redirectToLogin = async () => {
     await supabase.auth.signOut();
     redirect("/login");
   };
@@ -45,18 +45,17 @@ export function Navbar({ user }: NavbarProps) {
                 <Link href="/">Home</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link href="/albums">Albums</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              {/* <ModeToggle></ModeToggle> */}
-            </NavigationMenuItem>
             {user && (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href="/albums">Albums</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
+            {user ? (
               <NavigationMenuItem>
                 <NavigationMenuTrigger>
                   {user.first_name} {user.last_name}
@@ -71,7 +70,7 @@ export function Navbar({ user }: NavbarProps) {
                         <Button
                           variant="ghost"
                           className="cursor-pointer hover:bg-accent hover:text-accent-foreground focus:bg-accent"
-                          onClick={handleLogout}
+                          onClick={redirectToLogin}
                         >
                           Logout
                         </Button>
@@ -79,6 +78,16 @@ export function Navbar({ user }: NavbarProps) {
                     </li>
                   </ul>
                 </NavigationMenuContent>
+              </NavigationMenuItem>
+            ) : (
+              <NavigationMenuItem>
+                <Button
+                  variant="ghost"
+                  className="cursor-pointer hover:bg-accent hover:text-accent-foreground focus:bg-accent"
+                  onClick={redirectToLogin}
+                >
+                  Login
+                </Button>
               </NavigationMenuItem>
             )}
           </NavigationMenuList>

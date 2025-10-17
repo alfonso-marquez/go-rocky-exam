@@ -38,5 +38,5 @@ export async function signup(formData: FormData) {
   // Revalidate the homepage to show the new user in the list
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect("/login");
 }
