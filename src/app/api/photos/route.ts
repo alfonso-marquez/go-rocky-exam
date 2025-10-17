@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const POST = async (req: Request) => {
   const supabase = await createClient();
+
   const formData = await req.formData();
   const bucket = process.env.NEXT_PUBLIC_SUPABASE_BUCKET!;
 

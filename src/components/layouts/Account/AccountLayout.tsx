@@ -1,14 +1,8 @@
 import { AccountLayoutProps } from "@/types/auth";
-import Image from "next/image";
+import { Camera } from "lucide-react";
 
 export default function AccountLayout({
   heading,
-  logo = {
-    url: "/",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-wordmark.svg",
-    alt: "logo",
-    title: "shadcnblocks.com",
-  },
   children,
   footerText,
   footerLinkText,
@@ -18,18 +12,7 @@ export default function AccountLayout({
     <section className="bg-muted h-screen">
       <div className="flex h-full items-center justify-center">
         <div className="flex flex-col items-center gap-6 lg:justify-start">
-          {/* Logo */}
-          <a href={logo.url}>
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              title={logo.title}
-              className="h-10 dark:invert"
-              width={300}
-              height={300}
-            />
-          </a>
-
+          <Camera className="h-12 w-12" />
           <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
             <h1 className="text-xl font-semibold">{heading}</h1>
 

@@ -42,7 +42,6 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
     name: z.string().min(1, "Name must be at least 1 character."),
     description: z
       .string()
-      .min(1, "Description must be at least 1 character.")
       .max(500, "Description must be at most 500 characters."),
   });
 

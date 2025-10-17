@@ -23,16 +23,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import AlbumFormDialog from "./AlbumFormDialog";
 import { Card } from "../ui/card";
-import { Eye, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { Eye, MoreHorizontalIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import EditFormDialog from "./EditFormDialog";
 import { Album } from "./types";
 import { Skeleton } from "../ui/skeleton";
 import Image from "next/image";
+import AlbumDeleteDialog from "./AlbumDeleteDialog";
 
 export default function AlbumList() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
   const supabase = createClient();
 
   const fetchAlbums = useCallback(async () => {
@@ -62,18 +65,18 @@ export default function AlbumList() {
     }
   }, [supabase]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this album?")) return;
-    const { error } = await supabase.from("albums").delete().eq("id", id);
-    if (!error) fetchAlbums();
-  };
-
   useEffect(() => {
     fetchAlbums();
   }, [fetchAlbums]);
 
   return (
     <div className="container mx-auto p-6">
+      <AlbumDeleteDialog
+        open={openModal}
+        onOpenChange={setOpenModal}
+        id={selectedId}
+        fetchAlbums={fetchAlbums}
+      />
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, idx) => (
@@ -142,12 +145,18 @@ export default function AlbumList() {
                       <DropdownMenuSeparator />
                       <DropdownMenuGroup>
                         {/* <DropdownMenuItem variant="destructive" onClick={() => deleteAlbum(album.id?.toString())}> */}
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onClick={() => handleDelete(album.id?.toString())}
-                        >
-                          <Trash2Icon />
-                          Delete Album
+                        <DropdownMenuItem>
+                          {/* <AlbumDeleteDialog /> */}
+                          <button
+                            onClick={() => {
+                              setSelectedId(album.id);
+                              setOpenModal(true);
+                            }}
+                            className="flex gap-2 w-full"
+                          >
+                            <Trash2 color="red" />
+                            Delete Album
+                          </button>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
@@ -160,8 +169,7 @@ export default function AlbumList() {
                       src={coverUrl || "/placeholder.jpeg"} // <-- use first photo or placeholder
                       alt={album.name}
                       className="absolute top-0 left-0 w-full h-full object-cover"
-                      width={400}
-                      height={400}
+                      fill
                     />
                   </Link>
                 </div>
