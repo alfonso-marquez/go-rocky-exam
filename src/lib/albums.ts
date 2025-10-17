@@ -1,10 +1,16 @@
 // Fetch all albums
 import { createClient } from "@/utils/supabase/server";
+import { NextResponse } from "next/server";
 
 const getAlbums = async () => {
-  const res = await fetch("/api/albums", { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch albums");
-  return res.json();
+  const supabase = await createClient();
+  try {
+    const { data: albums, error } = await supabase.from("albums").select();
+    console.log("albums", albums);
+    return NextResponse.json(albums, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 };
 
 // Fetch single album by ID

@@ -13,12 +13,10 @@ const GET = async ({ params }: Params) => {
         { status: 400 }
       );
     }
-
     const album = await getAlbum(params.id); // ✅ uses lib helper
 
     return NextResponse.json(album, { status: 200 });
   } catch (err: any) {
-    console.error("GET /api/albums/[id] error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 };
