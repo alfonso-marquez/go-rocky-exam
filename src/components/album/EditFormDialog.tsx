@@ -93,9 +93,6 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
         // Adding new
         setAlbums((prev) => [...prev, data]);
       }
-
-      // ✅ Optional success feedback
-      console.log("Album saved successfully:", data);
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {

@@ -22,11 +22,9 @@ export default function AlbumDeleteDialog({
 }) {
   const [loading, setLoading] = useState(false);
 
-  console.log("Deleting album:", id);
   const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Deleting album:", id);
     const supabase = createClient();
     const { error } = await supabase.from("albums").delete().eq("id", id);
     onOpenChange(false);

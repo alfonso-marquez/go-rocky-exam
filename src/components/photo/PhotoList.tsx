@@ -24,7 +24,6 @@ export default function PhotoList() {
 
         const photos = await res.json();
         setPhotos(photos);
-        console.log("Photos fetched:", photos);
       } catch (error) {
         console.error(error instanceof Error ? error.message : "Unknown error");
       } finally {
@@ -33,7 +32,6 @@ export default function PhotoList() {
     };
     fetchPhotos();
   }, []);
-  console.log("after Photos fetched:", photos);
 
   return (
     <section id="photo-list">

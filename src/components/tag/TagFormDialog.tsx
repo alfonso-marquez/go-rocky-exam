@@ -62,7 +62,6 @@ export default function TagFormDialog() {
       }
 
       const newTag = await res.json();
-      console.log("Tag created:", newTag);
 
       // Optionally update local state to show the new tag
       setTags((prev: TagInterface[]) => [...prev, ...newTag]);
@@ -73,7 +72,6 @@ export default function TagFormDialog() {
       setName("");
     }
   };
-  console.log("Tags:", tags);
   return (
     <Dialog>
       <DialogTrigger asChild>

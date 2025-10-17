@@ -95,7 +95,6 @@ export default function AddPhotoDialog({
       const data = await res.json();
       // Add new photo to album list immediately
       if (data?.photo) {
-        console.log("Inserted photo:", data.photo);
         onPhotoAdded?.(data.photo); // This now works
       }
 
@@ -194,7 +193,6 @@ export default function AddPhotoDialog({
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        console.log("File:", file);
                         setFile(file ?? null);
 
                         // ✅ update react-hook-form value and trigger validation

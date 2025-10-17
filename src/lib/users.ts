@@ -2,7 +2,6 @@ const getUsers = async () => {
   const res = await fetch("/api/users", {
     cache: "no-store",
   });
-  // console.log("Fetching users from /api/users", res);
   if (!res.ok) {
     throw new Error("Failed to fetch users");
   }
