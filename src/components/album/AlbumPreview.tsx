@@ -57,7 +57,7 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
           >
             <Image
               src={photo.url}
-              alt={photo.name || "Photo"}
+              alt={photo.title || "Photo"}
               className="object-cover transition-transform duration-300 hover:scale-105"
               fill
             />
