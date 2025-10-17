@@ -7,6 +7,7 @@ import AddPhotoDialog from "../photo/AddPhotoDialog";
 import { Photo } from "../photo/types";
 
 export default function AlbumPreview({ albumId }: { albumId: number }) {
+  // fetch data
   // change type
   const [photos, setPhotos] = useState<Photo[]>([]); // change type
   const [loading, setLoading] = useState(true);
@@ -20,7 +21,6 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
           .select("*")
           .eq("album_id", albumId)
           .order("created_at", { ascending: false });
-
         if (error) throw error;
         setPhotos(data || []);
       } catch (err) {

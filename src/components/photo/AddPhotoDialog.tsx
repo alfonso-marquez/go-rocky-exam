@@ -36,7 +36,10 @@ const noFutureDateString = z
 
 const formSchema = z.object({
   title: z.string().max(30, { message: "Title must be at most 30 characters" }),
-  description: z.string().max(30, { message: "Description must be at most 100 characters" }).optional(),
+  description: z
+    .string()
+    .max(30, { message: "Description must be at most 100 characters" })
+    .optional(),
   // camera_brand: z.string().optional(),
   // photo_category: z.string().optional(),
   details: z.string().optional(),
@@ -106,7 +109,6 @@ export default function AddPhotoDialog({
           description: "Your photo has been uploaded successfully.",
         });
       }
-
     } catch (error) {
       toast.error("Error!", {
         description:
@@ -159,9 +161,7 @@ export default function AddPhotoDialog({
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Title of uploaded photo
-                  </FormDescription>
+                  <FormDescription>Title of uploaded photo</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

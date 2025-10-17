@@ -1,5 +1,6 @@
 // Fetch all albums
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 const getAlbums = async () => {
   const supabase = await createClient();
@@ -16,8 +17,18 @@ const getAlbum = async (id: number) => {
     .select()
     .eq("id", id)
     .single();
-  if (error)
-    throw new Error(error?.message || `Failed to fetch tag with id ${id}`);
+  if (error) {
+    // Handle not found separately
+    if (error.code === "PGRST116") {
+      // Supabase “no rows returned” code
+      console.error(new Error(error.message || "404 Not Found"));
+      redirect("/albums");
+    } else {
+      // Supabase “no rows returned” code
+      console.error(new Error(error.message || "Internal Server Error"));
+      redirect("/albums");
+    }
+  }
   return data; // single object or throws
 };
 
@@ -28,7 +39,7 @@ const createAlbum = async (name: string) => {
     .from("albums")
     .insert({ name })
     .select();
-  if (error) throw new Error(error?.message || "Failed to create tag");
+  if (error) throw new Error(error?.message || "Failed to create album");
   return data || []; // return array of created albums
 };
 
@@ -41,7 +52,7 @@ const updateAlbum = async (id: number, name: string) => {
     .eq("id", id)
     .select();
   if (error)
-    throw new Error(error?.message || `Failed to update tag with id ${id}`);
+    throw new Error(error?.message || `Failed to update album with id ${id}`);
   return data || []; // return array of updated albums
 };
 
@@ -54,7 +65,7 @@ const deleteAlbum = async (id: number) => {
     .eq("id", id)
     .select();
   if (error)
-    throw new Error(error?.message || `Failed to delete tag with id ${id}`);
+    throw new Error(error?.message || `Failed to delete album with id ${id}`);
   return data || []; // return array of deleted albums
 };
 

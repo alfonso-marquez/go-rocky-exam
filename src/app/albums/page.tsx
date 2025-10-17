@@ -32,7 +32,6 @@ export default async function Albums() {
           </Card>
         </div>
       </div>
-
     </>
   );
 }
