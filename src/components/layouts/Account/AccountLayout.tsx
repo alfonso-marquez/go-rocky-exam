@@ -25,6 +25,8 @@ export default function AccountLayout({
               alt={logo.alt}
               title={logo.title}
               className="h-10 dark:invert"
+              width={300}
+              height={300}
             />
           </a>
 

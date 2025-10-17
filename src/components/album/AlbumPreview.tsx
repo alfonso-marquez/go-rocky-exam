@@ -60,6 +60,8 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
               alt={photo.name || "Photo"}
               fill
               className="object-cover transition-transform duration-300 hover:scale-105"
+              width={500}
+              height={500}
             />
           </div>
         ))}
