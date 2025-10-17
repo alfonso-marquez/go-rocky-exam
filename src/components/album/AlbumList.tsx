@@ -113,7 +113,7 @@ export default function AlbumList() {
                     ? current
                     : latest;
                 }).url
-              : "https://placehold.co/400";
+              : null;
             return (
               <Card
                 key={album.id}
@@ -157,9 +157,11 @@ export default function AlbumList() {
                 <div className="w-full h-0 pb-[100%] relative rounded-md overflow-hidden mb-2">
                   <Link href={`/album-preview/${album.id}`} passHref>
                     <Image
-                      src={coverUrl} // <-- use first photo or placeholder
+                      src={coverUrl || "/placeholder.jpeg"} // <-- use first photo or placeholder
                       alt={album.name}
                       className="absolute top-0 left-0 w-full h-full object-cover"
+                      width={400}
+                      height={400}
                     />
                   </Link>
                 </div>

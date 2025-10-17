@@ -6,10 +6,10 @@ import React from "react";
 export default async function AlbumPreviewPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
   // Handle await params NextJS
-  const albumId = Number((await params).id);
+  const albumId = Number(params.id);
   const album = await getAlbum(albumId);
 
   return (
