@@ -35,8 +35,8 @@ const noFutureDateString = z
   });
 
 const formSchema = z.object({
-  title: z.string().min(5, { message: "Title must be at least 5 characters" }),
-  description: z.string().optional(),
+  title: z.string().max(30, { message: "Title must be at most 30 characters" }),
+  description: z.string().max(30, { message: "Description must be at most 100 characters" }).optional(),
   // camera_brand: z.string().optional(),
   // photo_category: z.string().optional(),
   details: z.string().optional(),
@@ -93,26 +93,28 @@ export default function AddPhotoDialog({
       });
 
       const data = await res.json();
-      // Add new photo to album list immediately
-      if (data?.photo) {
-        onPhotoAdded?.(data.photo); // This now works
+
+      // Handle API error
+      if (!res.ok || data.error) {
+        throw new Error("Upload Failed. Please try again.");
       }
 
-      setOpen(false);
-      form.reset();
+      // Add new photo to album list immediately
+      if (data?.photo) {
+        onPhotoAdded?.(data.photo);
+        toast.success("Success!", {
+          description: "Your photo has been uploaded successfully.",
+        });
+      }
 
-      toast.success("Success!", {
-        description: "Your photo has been uploaded successfully.",
-      });
-      // const data = await res.json();
-      // if (!res.ok) alert(data.error || "Upload failed");
-      // else alert("Upload successful!");
     } catch (error) {
       toast.error("Error!", {
         description:
           error instanceof Error ? error.message : "Something went wrong.",
       });
     } finally {
+      setOpen(false);
+      form.reset();
       setIsUploading(false);
       setLoading(false);
     }
@@ -158,7 +160,7 @@ export default function AddPhotoDialog({
                     <Input {...field} />
                   </FormControl>
                   <FormDescription>
-                    Title of uploaded photo (must be at least 5 characters).
+                    Title of uploaded photo
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
