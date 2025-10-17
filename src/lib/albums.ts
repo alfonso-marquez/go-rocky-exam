@@ -1,63 +1,61 @@
 // Fetch all albums
 import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
 
 const getAlbums = async () => {
   const supabase = await createClient();
-  try {
-    const { data: albums, error } = await supabase.from("albums").select();
-    console.log("albums", albums);
-    return NextResponse.json(albums, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+  const { data, error } = await supabase.from("albums").select();
+  if (error) throw new Error(error?.message || "Failed to fetch albums");
+  return data || []; // always return array, safe for UI
 };
 
-// Fetch single album by ID
-const getAlbum = async (id: string) => {
+// GET single tag by id
+const getAlbum = async (id: number) => {
   const supabase = await createClient();
-
-  const { data: album, error } = await supabase
+  const { data, error } = await supabase
     .from("albums")
-    .select("*")
-    .eq("id", Number(id))
+    .select()
+    .eq("id", id)
     .single();
-
-  if (error || !album) throw new Error(error?.message || "Album not found");
-
-  return album;
+  if (error)
+    throw new Error(error?.message || `Failed to fetch tag with id ${id}`);
+  return data; // single object or throws
 };
 
-// Create a new album
-const createAlbum = async (data: { name: string; description?: string }) => {
-  const res = await fetch("/api/albums", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create album");
-  return res.json();
+// CREATE tag
+const createAlbum = async (name: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("albums")
+    .insert({ name })
+    .select();
+  if (error) throw new Error(error?.message || "Failed to create tag");
+  return data || []; // return array of created albums
 };
 
-// Update album by ID
-const updateAlbum = async (
-  id: string,
-  data: Partial<{ name: string; description: string }>
-) => {
-  const res = await fetch(`/api/albums/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to update album");
-  return res.json();
+// UPDATE tag
+const updateAlbum = async (id: number, name: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("albums")
+    .update({ name })
+    .eq("id", id)
+    .select();
+  if (error)
+    throw new Error(error?.message || `Failed to update tag with id ${id}`);
+  return data || []; // return array of updated albums
 };
 
-// Delete album by ID
-const deleteAlbum = async (id: string) => {
-  const res = await fetch(`/api/albums/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to delete album");
-  return res.json();
+// DELETE tag
+const deleteAlbum = async (id: number) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("albums")
+    .delete()
+    .eq("id", id)
+    .select();
+  if (error)
+    throw new Error(error?.message || `Failed to delete tag with id ${id}`);
+  return data || []; // return array of deleted albums
 };
 
 export { getAlbums, getAlbum, createAlbum, updateAlbum, deleteAlbum };
@@ -65,10 +63,6 @@ export { getAlbums, getAlbum, createAlbum, updateAlbum, deleteAlbum };
 export type Album = {
   id: string;
   name: string;
-  description: string;
-  created_at: string;
-  updated_at: string;
-  user_id: string;
 };
 
 export type Albums = Album[];

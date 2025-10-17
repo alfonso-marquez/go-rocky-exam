@@ -1,65 +1,61 @@
 // Fetch all tags
 import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
 
 const getTags = async () => {
   const supabase = await createClient();
-  try {
-    const { data: tags, error } = await supabase.from("tags").select();
-    console.log("tags", tags);
-    return NextResponse.json(tags, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+  const { data, error } = await supabase.from("tags").select();
+  if (error) throw new Error(error?.message || "Failed to fetch tags");
+  return data || []; // always return array, safe for UI
 };
-// Fetch single tag by ID
-const getTag = async (id: string) => {
+
+// GET single tag by id
+const getTag = async (id: number) => {
   const supabase = await createClient();
-
-  const { data: tag, error } = await supabase
+  const { data, error } = await supabase
     .from("tags")
-    .select("*")
-    .eq("id", Number(id))
+    .select()
+    .eq("id", id)
     .single();
-
-  if (error || !tag) throw new Error(error?.message || "Tag not found");
-
-  return tag;
+  if (error)
+    throw new Error(error?.message || `Failed to fetch tag with id ${id}`);
+  return data; // single object or throws
 };
 
-// Create a new Tag
-const createTag = async (data: { name: string; description?: string }) => {
-  const res = await fetch("/api/tags", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to create album");
-  return res.json();
+// CREATE tag
+const createTag = async (name: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("tags").insert({ name }).select();
+  if (error) throw new Error(error?.message || "Failed to create tag");
+  return data || []; // return array of created tags
 };
 
-// Update Tag by ID
-const updateTag = async (
-  id: string,
-  data: Partial<{ name: string; description: string }>
-) => {
-  const res = await fetch(`/api/tags/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to update album");
-  return res.json();
+// UPDATE tag
+const updateTag = async (id: number, name: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tags")
+    .update({ name })
+    .eq("id", id)
+    .select();
+  if (error)
+    throw new Error(error?.message || `Failed to update tag with id ${id}`);
+  return data || []; // return array of updated tags
 };
 
-// Delete Tag by ID
-const deleteTag = async (id: string) => {
-  const res = await fetch(`/api/tags/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to delete album");
-  return res.json();
+// DELETE tag
+const deleteTag = async (id: number) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("tags")
+    .delete()
+    .eq("id", id)
+    .select();
+  if (error)
+    throw new Error(error?.message || `Failed to delete tag with id ${id}`);
+  return data || []; // return array of deleted tags
 };
 
-export { getTags, getTag, createTag, updateTag, deleteTag };
+export { getTags, createTag, updateTag, deleteTag };
 
 export type Tag = {
   id: string;

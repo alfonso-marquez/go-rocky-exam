@@ -55,7 +55,6 @@ export default function AlbumList() {
                 .eq("user_id", user.id)
                 .order("created_at", { ascending: false });
             setAlbums(data || []);
-            console.log(data);
         } catch (error) {
             console.error("Error fetching albums:", error);
         } finally {
@@ -63,7 +62,7 @@ export default function AlbumList() {
         }
     };
 
-    const deleteAlbum = async (id: string) => {
+    const handleDelete = async (id: string) => {
         if (!confirm("Delete this album?")) return;
         const { error } = await supabase.from("albums").delete().eq("id", id);
         if (!error) fetchAlbums();
@@ -134,7 +133,8 @@ export default function AlbumList() {
                                         </DropdownMenuGroup>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuGroup>
-                                            <DropdownMenuItem variant="destructive" onClick={() => deleteAlbum(album.id?.toString())}>
+                                            {/* <DropdownMenuItem variant="destructive" onClick={() => deleteAlbum(album.id?.toString())}> */}
+                                            <DropdownMenuItem variant="destructive" onClick={() => handleDelete(album.id?.toString())}>
                                                 <Trash2Icon />
                                                 Delete Album
                                             </DropdownMenuItem>

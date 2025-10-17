@@ -7,13 +7,11 @@ import AddPhotoDialog from "../photo/AddPhotoDialog";
 
 export default function AlbumPreview({ initialAlbum, albumId }: any) {
     const [album, setAlbum] = useState(initialAlbum);
-    const [photos, setPhotos] = useState<any[]>([]);
+    const [photos, setPhotos] = useState<any[]>([]); // fix
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchPhotos = async () => {
-            console.log(albumId);
-            debugger
             try {
                 const supabase = createClient(); // client-side version, not awaited
                 const { data, error } = await supabase

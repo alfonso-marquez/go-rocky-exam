@@ -4,6 +4,7 @@ import AlbumFormDialog from "@/components/album/AlbumFormDialog";
 import AlbumList from "@/components/album/AlbumList";
 
 import { Card, CardContent } from "@/components/ui/card";
+import TagFormDialog from "@/components/tag/TagFormDialog";
 
 export default async function Albums() {
   const supabase = await createClient();
@@ -18,7 +19,8 @@ export default async function Albums() {
           <Card>
             <div className="flex flex-1 items-center px-10">
               <h1 className="text-3xl font-semibold mt-4 md:mb-2 md:text-4xl">My Albums</h1>
-              <div className="ml-auto">
+              <div className="ml-auto flex gap-2">
+                <TagFormDialog />
                 <AlbumFormDialog />
               </div>
             </div>

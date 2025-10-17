@@ -1,24 +1,23 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { getTags } from "@/lib/tags";
+import { getTags, createTag, updateTag, deleteTag } from "@/lib/tags";
 
 interface Params {
   params: { id: string };
 }
-//legit
+
 const GET = async () => {
   try {
-    const tags = await getTags(); // uses lib helper
-    console.log("tags", tags);
+    const tags = await getTags();
     return NextResponse.json(tags, { status: 200 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 };
 
+// POST - create a new tag (authenticated)
 const POST = async (req: Request) => {
   const supabase = await createClient();
-  // Authenticated users only
   const {
     data: { user },
     error: userError,
@@ -29,25 +28,23 @@ const POST = async (req: Request) => {
   }
 
   const { name } = await req.json();
-  if (!name) {
+  if (!name)
     return NextResponse.json(
       { error: "Tag name is required" },
       { status: 400 }
     );
-  }
 
-  const { data, error } = await supabase.from("tags").insert({ name }).select();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  try {
+    const data = await createTag(name);
+    return NextResponse.json(data, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
-  return NextResponse.json(data);
 };
 
-const PATCH = async ({ params }: Params, req: Request) => {
+// PATCH - update a tag (authenticated)
+const PATCH = async (req: Request) => {
   const supabase = await createClient();
-
-  // Authenticated users only
   const {
     data: { user },
     error: userError,
@@ -57,30 +54,24 @@ const PATCH = async ({ params }: Params, req: Request) => {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { name } = await req.json();
-  if (!name) {
+  const { id, name } = await req.json();
+  if (!id || !name)
     return NextResponse.json(
-      { error: "Tag name is required" },
+      { error: "Tag id and name are required" },
       { status: 400 }
     );
+
+  try {
+    const data = await updateTag(id, name);
+    return NextResponse.json(data, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
-
-  const { data, error } = await supabase
-    .from("tags")
-    .update({ name })
-    .eq("id", params.id)
-    .select();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
 };
 
+// DELETE - delete a tag (authenticated)
 const DELETE = async (req: Request) => {
   const supabase = await createClient();
-  // Authenticated users only
   const {
     data: { user },
     error: userError,
@@ -91,21 +82,15 @@ const DELETE = async (req: Request) => {
   }
 
   const { id } = await req.json();
-  if (!id) {
+  if (!id)
     return NextResponse.json({ error: "Tag id is required" }, { status: 400 });
+
+  try {
+    const data = await deleteTag(id);
+    return NextResponse.json(data, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
-
-  const { data, error } = await supabase
-    .from("tags")
-    .delete()
-    .eq("id", id)
-    .select();
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json(data);
 };
 
 export { GET, POST, PATCH, DELETE };

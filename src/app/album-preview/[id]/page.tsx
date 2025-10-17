@@ -1,18 +1,14 @@
-import { redirect } from 'next/navigation'
-import { Navbar } from "@/components/Navbar";
+
 import AlbumPreview from '@/components/album/AlbumPreview';
-import AlbumFormDialog from '@/components/album/AlbumFormDialog';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Album, getAlbum } from '@/lib/albums';
 import React from 'react';
-import UploadPhoto from '@/components/photo/UploadPhoto';
-import AddPhotoDialog from '@/components/photo/AddPhotoDialog';
 
 export default async function AlbumPreviewPage({ params }: { params: Promise<{ id: string }> }) {
 
     // Handle await params NextJS
     const albumId = (await params).id;
-    const album = await getAlbum(albumId);
+    const album = await getAlbum(Number(albumId));
 
     return (
         <>
