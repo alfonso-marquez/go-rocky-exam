@@ -18,7 +18,7 @@ export const POST = async (req: Request) => {
   if (!file || !albumId || !user) {
     return NextResponse.json(
       { error: "Missing required fields" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -2,10 +2,6 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getTags, createTag, updateTag, deleteTag } from "@/lib/tags";
 
-interface Params {
-  params: { id: string };
-}
-
 const GET = async () => {
   try {
     const tags = await getTags();
@@ -31,7 +27,7 @@ const POST = async (req: Request) => {
   if (!name)
     return NextResponse.json(
       { error: "Tag name is required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   try {
@@ -58,7 +54,7 @@ const PATCH = async (req: Request) => {
   if (!id || !name)
     return NextResponse.json(
       { error: "Tag id and name are required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   try {

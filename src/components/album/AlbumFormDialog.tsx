@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-
 import { Button } from "@/components/ui/button"
-
 import {
     Dialog,
     DialogContent,
@@ -15,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Pencil, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function AlbumFormDialog() {
     const [name, setName] = useState("");

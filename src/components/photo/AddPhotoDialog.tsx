@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -17,38 +17,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Toaster } from "@/components/ui/sonner"
-import { format } from "date-fns";
-import { Calendar as CalendarIcon, Plus } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Upload } from "lucide-react";
-
+import { Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { createPhotoApi } from "@/services/api";
-
 import { useState } from "react";
 import { toast } from "sonner";
-
-// import type { Photo } from "../../types/photo";
-// import { PHOTO_CAMERA_BRANDS, PHOTO_CATEGORIES } from "@/constants/filterOptions";
-// import { getPhotoUrl } from "@/helper/getPhotoUrl";
 
 // Zod Schema for Validation
 const noFutureDateString = z
@@ -78,16 +54,12 @@ const formSchema = z.object({
     }),
 });
 
-interface AddPhotoDialogProps {
-  albumId: string;
-}
-
 export default function AddPhotoDialog({
   albumId,
   onPhotoAdded,
 }: {
-  albumId: string
-  onPhotoAdded?: (photo: any) => void
+  albumId: string;
+  onPhotoAdded?: (photo: any) => void; // change type
 }) {
   const [loading, setLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -131,21 +103,20 @@ export default function AddPhotoDialog({
 
       toast.success("Success!", {
         description: "Your photo has been uploaded successfully.",
-      })
+      });
       // const data = await res.json();
       // if (!res.ok) alert(data.error || "Upload failed");
       // else alert("Upload successful!");
-
     } catch (error) {
       toast.error("Error!", {
-        description: error instanceof Error ? error.message : "Something went wrong.",
-      })
-
+        description:
+          error instanceof Error ? error.message : "Something went wrong.",
+      });
     } finally {
       setIsUploading(false);
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -212,7 +183,7 @@ export default function AddPhotoDialog({
             <FormField
               control={form.control}
               name="url"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Upload Photo</FormLabel>
                   <FormControl>
@@ -226,7 +197,9 @@ export default function AddPhotoDialog({
                         setFile(file ?? null);
 
                         // ✅ update react-hook-form value and trigger validation
-                        form.setValue("url", file ?? null, { shouldValidate: true });
+                        form.setValue("url", file ?? null, {
+                          shouldValidate: true,
+                        });
                       }}
                     />
                   </FormControl>
@@ -235,7 +208,11 @@ export default function AddPhotoDialog({
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={isUploading || !file} className="mt-4">
+            <Button
+              type="submit"
+              disabled={isUploading || !file}
+              className="mt-4"
+            >
               {isUploading ? (
                 <span>Uploading...</span>
               ) : loading ? (

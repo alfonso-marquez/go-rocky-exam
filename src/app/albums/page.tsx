@@ -18,7 +18,9 @@ export default async function Albums() {
         <div className="mx-auto my-30 w-full max-w-6xl">
           <Card>
             <div className="flex flex-1 items-center px-10">
-              <h1 className="text-3xl font-semibold mt-4 md:mb-2 md:text-4xl">My Albums</h1>
+              <h1 className="text-3xl font-semibold mt-4 md:mb-2 md:text-4xl">
+                My Albums
+              </h1>
               <div className="ml-auto flex gap-2">
                 <TagFormDialog />
                 <AlbumFormDialog />
@@ -29,7 +31,7 @@ export default async function Albums() {
             </CardContent>
           </Card>
         </div>
-      </div >
+      </div>
     </>
   );
 }

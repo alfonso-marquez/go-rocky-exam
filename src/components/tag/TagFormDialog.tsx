@@ -1,11 +1,18 @@
 "use client";
 
 import { Label } from "@radix-ui/react-label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
 import { Tag as TagInterface } from "./types";
 import { Tag } from "lucide-react";
 
@@ -30,6 +37,7 @@ export default function TagFormDialog() {
         const tags = await res.json();
         setTags(tags.map((tag: TagInterface) => ({ ...tag, selected: false })));
 
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       } catch (error: any) {
         console.error("Error creating tag:", error.message);
       }
@@ -61,6 +69,7 @@ export default function TagFormDialog() {
       // Optionally update local state to show the new tag
       setTags((prev: TagInterface[]) => [...prev, ...newTag]);
 
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     } catch (error: any) {
       console.error("Error creating tag:", error.message);
       // Optionally show toast or alert
@@ -72,15 +81,15 @@ export default function TagFormDialog() {
   console.log("Tags:", tags);
   return (
     <Dialog>
-      <DialogTrigger asChild ><Button variant="outline">
-        <Tag /> Manage Tags
-      </Button></DialogTrigger>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Tag /> Manage Tags
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Tags</DialogTitle>
-          <DialogDescription>
-            Manage your Tags
-          </DialogDescription>
+          <DialogDescription>Manage your Tags</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleCreate}>
           <div className="flex flex-col gap-6">
@@ -101,14 +110,17 @@ export default function TagFormDialog() {
           </div>
         </form>
         <div className="flex flex-wrap gap-2 mt-5">
-          {tags.length === 0 ? <span>No tags found</span> :
+          {tags.length === 0 ? (
+            <span>No tags found</span>
+          ) : (
             tags.map((tag: TagInterface) => (
-              <Badge key={`tag-${tag.id}`} variant="secondary">{tag.name}</Badge>
+              <Badge key={`tag-${tag.id}`} variant="secondary">
+                {tag.name}
+              </Badge>
             ))
-          }
+          )}
         </div>
-
       </DialogContent>
     </Dialog>
-  )
-};
+  );
+}

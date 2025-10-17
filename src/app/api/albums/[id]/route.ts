@@ -10,10 +10,10 @@ const GET = async ({ params }: Params) => {
     if (!params?.id) {
       return NextResponse.json(
         { error: "Album ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
-    const album = await getAlbum(params.id); // ✅ uses lib helper
+    const album = await getAlbum(Number(params.id)); // ✅ uses lib helper
 
     return NextResponse.json(album, { status: 200 });
   } catch (err: any) {

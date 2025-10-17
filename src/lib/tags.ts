@@ -9,17 +9,17 @@ const getTags = async () => {
 };
 
 // GET single tag by id
-const getTag = async (id: number) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("tags")
-    .select()
-    .eq("id", id)
-    .single();
-  if (error)
-    throw new Error(error?.message || `Failed to fetch tag with id ${id}`);
-  return data; // single object or throws
-};
+// const getTag = async (id: number) => {
+//   const supabase = await createClient();
+//   const { data, error } = await supabase
+//     .from("tags")
+//     .select()
+//     .eq("id", id)
+//     .single();
+//   if (error)
+//     throw new Error(error?.message || `Failed to fetch tag with id ${id}`);
+//   return data;
+// }; // single object or throws
 
 // CREATE tag
 const createTag = async (name: string) => {

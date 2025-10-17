@@ -25,7 +25,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const supabase = await createClient();
   const {
     data: { user },
@@ -33,11 +32,10 @@ export default async function RootLayout({
 
   const userData = user
     ? {
-      first_name: user.user_metadata.first_name,
-      last_name: user.user_metadata.last_name,
-    }
+        first_name: user.user_metadata.first_name,
+        last_name: user.user_metadata.last_name,
+      }
     : null;
-
 
   return (
     <html lang="en">
