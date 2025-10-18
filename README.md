@@ -15,9 +15,9 @@ Clean, responsive UI built for desktop and mobile.
 
 - [Next.js]
 - [React.js]
-- [Tailwind.com]
-- [Supabase.com]
-- [Shadcn.com]
+- [Tailwind-url]
+- [Supabase-url]
+- [Shadcn-url]
 
 ## Getting Started
 

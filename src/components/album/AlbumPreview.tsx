@@ -7,6 +7,7 @@ import AddPhotoDialog from "../photo/AddPhotoDialog";
 import { Photo, Tag } from "../photo/types";
 import PhotoFormDialog from "../photo/PhotoFormDialog";
 import TagFormDialog from "../tag/TagFormDialog";
+import LoadingState from "../LoadingState";
 
 export default function AlbumPreview({ albumId }: { albumId: number }) {
   // fetch data
@@ -70,6 +71,16 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
     setPhotos((prev) => [newPhoto, ...prev]);
   };
 
+  if (loading) {
+    return <LoadingState count={3} width={200} />;
+  }
+
+  if (!loading && photos.length === 0) {
+    <div className="text-center text-gray-500 py-10">
+      No photos found for this album.
+    </div>;
+  }
+
   return (
     <section>
       <div className="flex gap-4 justify-end p-4">
@@ -79,8 +90,6 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
           onPhotoAdded={handlePhotoAdded}
         />
       </div>
-      {loading && <p>Loading photos...</p>}
-      {photos.length === 0 && <p>No photos found for this album.</p>}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {photos.map((photo) => (
