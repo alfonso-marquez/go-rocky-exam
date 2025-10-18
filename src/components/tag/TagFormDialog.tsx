@@ -25,35 +25,13 @@ export default function TagFormDialog({
 }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  // const [tags, setTags] = useState<TagInterface[]>([]);
-
-  // useEffect(() => {
-  //   const fetchTags = async () => {
-  //     try {
-  //       const res = await fetch("/api/tags", {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       });
-
-  //       if (!res.ok) {
-  //         const err = await res.json();
-  //         throw new Error(err.error || "Failed to fetch tags");
-  //       }
-
-  //       const tags = await res.json();
-  //       setTags(tags.map((tag: TagInterface) => ({ ...tag, selected: false })));
-  //     } catch (error) {
-  //       console.error(error instanceof Error ? error.message : "Unknown error");
-  //     }
-  //   };
-  //   fetchTags();
-  // }, []);
 
   // change later
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+
     if (!name) return; // simple validation
+    setLoading(true);
 
     try {
       const res = await fetch("/api/tags", {
@@ -70,7 +48,7 @@ export default function TagFormDialog({
       const newTag = await res.json();
 
       // Optionally update local state to show the new tag
-      setTags((prev: Tag[]) => [...prev, ...newTag]);
+      setTags((prev: Tag[]) => [...prev, newTag]);
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {
@@ -92,7 +70,7 @@ export default function TagFormDialog({
         </DialogHeader>
         <form onSubmit={handleCreate}>
           <div className="flex flex-col gap-6">
-            <Label htmlFor="album-name">Name</Label>
+            <Label htmlFor="tag-name">Name</Label>
             <div className="flex gap-2 ">
               <Input
                 className="w-2/3"
