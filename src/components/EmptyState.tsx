@@ -1,32 +1,37 @@
 import { IconFolderCode } from "@tabler/icons-react";
-import AlbumFormDialog from "./album/AlbumFormDialog";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "./ui/empty";
 
-export default function EmptyState() {
+interface EmptyStateProps {
+  type: "album" | "photo";
+}
+
+export default function EmptyState({ type }: EmptyStateProps) {
+  const isAlbum = type === "album";
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <IconFolderCode />
         </EmptyMedia>
-        <EmptyTitle>No Albums Yet</EmptyTitle>
+        <EmptyTitle>
+          {isAlbum ? "No Albums Yet. " : "No Photos found for this album. "}
+        </EmptyTitle>
         <EmptyDescription>
-          You haven&apos;t created any albums yet. Get started by creating your
-          first album.
+          {isAlbum ? (
+            <p className="text-muted-foreground">
+              Get started by creating your first album.
+            </p>
+          ) : (
+            <p className="text-muted-foreground">Add a photo to get started.</p>
+          )}
         </EmptyDescription>
       </EmptyHeader>
-      <EmptyContent>
-        <div className="flex gap-2">
-          <AlbumFormDialog />
-        </div>
-      </EmptyContent>
     </Empty>
   );
 }

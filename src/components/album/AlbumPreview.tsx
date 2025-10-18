@@ -8,6 +8,7 @@ import { Photo, Tag } from "../photo/types";
 import PhotoFormDialog from "../photo/PhotoFormDialog";
 import TagFormDialog from "../tag/TagFormDialog";
 import LoadingState from "../LoadingState";
+import EmptyState from "../EmptyState";
 
 export default function AlbumPreview({ albumId }: { albumId: number }) {
   // fetch data
@@ -75,10 +76,8 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
     return <LoadingState count={3} width={200} />;
   }
 
-  if (!loading && photos.length === 0) {
-    <div className="text-center text-gray-500 py-10">
-      No photos found for this album.
-    </div>;
+  if (!loading && photos.length > 0) {
+    return <EmptyState type="photo" />;
   }
 
   return (

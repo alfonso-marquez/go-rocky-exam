@@ -20,6 +20,7 @@ import { Album } from "./types";
 import Image from "next/image";
 import AlbumDeleteDialog from "./AlbumDeleteDialog";
 import LoadingState from "../LoadingState";
+import EmptyState from "../EmptyState";
 
 export default function AlbumList() {
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -65,9 +66,7 @@ export default function AlbumList() {
   }
 
   if (!loading && albums.length === 0) {
-    <div className="text-center text-gray-500 py-10">
-      No Albums Yet. Get started by creating your first album.
-    </div>;
+    return <EmptyState type="album" />;
   }
 
   return (

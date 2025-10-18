@@ -4,6 +4,14 @@ import { useEffect, useState } from "react";
 import { Photo } from "./types";
 import Image from "next/image";
 import LoadingState from "../LoadingState";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "../ui/empty";
+import { Frown } from "lucide-react";
 
 export default function PhotoList() {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -39,13 +47,24 @@ export default function PhotoList() {
   }
 
   if (!loading && photos.length === 0) {
-    <div className="text-center text-gray-500 py-10">No photos found.</div>;
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Frown />
+          </EmptyMedia>
+          <EmptyTitle>No Photos Found</EmptyTitle>
+          <EmptyDescription>
+            It&apos;s quiet here... upload your first shot to bring this space
+            to life.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
   }
   return (
     <section id="photo-list">
       <div className="container">
-        {/* {loading && <LoadingState />} */}
-
         <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {photos.map((photo) => (
             <div
