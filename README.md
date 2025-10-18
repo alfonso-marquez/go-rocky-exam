@@ -1,6 +1,6 @@
 # Photo Library App
 
-#### About The Project:
+#### Project Overview:
 
 Photo Library is a web application where users can showcase their creativity. They can create albums, upload photos, and view all uploaded images of all users on the homepage.
 
@@ -48,6 +48,8 @@ NEXT_PUBLIC_SUPABASE_BUCKET
 
 ![Database Schema](./schema.png)
 
+#### Migrations - WIP
+
 7. Set up RLS (Row Level Security) policies
 8. Run the development server:
 
@@ -75,6 +77,40 @@ npm run dev
 5. Visit the homepage to view all uploaded images from all users.
 6. Edit or delete albums, photos, or tags as needed.
 7. Add tags to your photos.
+
+### Access Control Notes
+
+1. Public Access (Non-authenticated users)
+   Non-logged-in users can view public resources such as photos, albums, user profiles, and tags.
+
+```
+CREATE POLICY "Allow public read on photos"
+ON photos
+FOR SELECT
+USING (true);
+
+```
+
+2. Authenticated Users
+   Logged-in users can create, update, and delete their own resources (albums, photos, tags).
+   Users can only modify data where they are the owner (photos, albums)
+
+```
+CREATE POLICY "Allow all access to authenticated users"
+ON photos
+FOR ALL
+USING (auth.uid() = user_id);
+```
+
+#### This ensures:
+
+Public viewers can browse content safely.
+Authenticated users maintain full control over their own content.
+No user can modify another user’s data due to RLS enforcement.
+
+### List of AI tools used:
+
+ChatGpt, Windsurf
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
