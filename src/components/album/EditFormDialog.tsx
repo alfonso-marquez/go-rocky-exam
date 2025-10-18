@@ -87,7 +87,17 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
       if (album.id) {
         // Editing existing
         setAlbums((prev) =>
-          prev.map((album) => (album.id === data.id ? data : album)),
+          prev.map((a) =>
+            a.id === data.id
+              ? {
+                  ...a,
+                  name: data.name,
+                  description: data.description,
+                  // leave a.photos as-is to prevent cover change
+                  photos: a.photos,
+                }
+              : a,
+          ),
         );
       } else {
         // Adding new

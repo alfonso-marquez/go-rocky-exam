@@ -2,9 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import AlbumFormDialog from "@/components/album/AlbumFormDialog";
 import AlbumList from "@/components/album/AlbumList";
-
 import { Card, CardContent } from "@/components/ui/card";
-import TagFormDialog from "@/components/tag/TagFormDialog";
 
 export default async function Albums() {
   const supabase = await createClient();
@@ -18,11 +16,13 @@ export default async function Albums() {
         <div className="mx-auto my-30 w-full max-w-6xl">
           <Card>
             <div className="flex items-center justify-center px-10 gap-4">
-              <h1 className="text-2xl md:text-3xl font-semibold md:mb-2">
-                My Albums
-              </h1>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-semibold md:mb-2">
+                  My Albums
+                </h1>
+                <p className="text-muted-foreground">All albums</p>
+              </div>
               <div className="flex gap-2 ml-auto">
-                <TagFormDialog />
                 <AlbumFormDialog />
               </div>
             </div>

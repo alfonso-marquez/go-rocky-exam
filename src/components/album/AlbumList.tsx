@@ -51,12 +51,13 @@ export default function AlbumList() {
           `
                     *,
                     photos (
-                    url
+                    url,
+                    created_at
                     )
                 `,
         )
         .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
+        .order("id", { ascending: false });
       setAlbums(data || []);
     } catch (error) {
       console.error("Error fetching albums:", error);
@@ -109,14 +110,12 @@ export default function AlbumList() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {albums.map((album) => {
-            const coverUrl = album.photos?.length
-              ? album.photos.reduce((latest, current) => {
-                  return new Date(current.created_at).getTime() >
-                    new Date(latest.created_at).getTime()
-                    ? current
-                    : latest;
-                }).url
-              : null;
+            const latestPhoto = album.photos?.sort(
+              (a, b) =>
+                new Date(b.created_at).getTime() -
+                new Date(a.created_at).getTime(),
+            )[0];
+            const coverUrl = latestPhoto?.url;
             return (
               <Card
                 key={album.id}

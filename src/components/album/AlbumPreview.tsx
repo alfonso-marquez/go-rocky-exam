@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client"; // your Supabase client
 import Image from "next/image";
 import AddPhotoDialog from "../photo/AddPhotoDialog";
@@ -15,14 +15,13 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
   const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState<Tag[]>([]);
 
-  useEffect(() => {
-    const fetchPhotos = async () => {
-      try {
-        const supabase = createClient(); // client-side version, not awaited
-        const { data, error } = await supabase
-          .from("photos")
-          .select(
-            `*,
+  const fetchPhotos = useCallback(async () => {
+    try {
+      const supabase = createClient(); // client-side version, not awaited
+      const { data, error } = await supabase
+        .from("photos")
+        .select(
+          `*,
               photo_tags (
               tag_id,
               tags (
@@ -31,34 +30,26 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
               )
             )
           `,
-          )
-          .eq("album_id", albumId)
-          .order("created_at", { ascending: false });
-        if (error) throw error;
-        setPhotos(data || []);
-      } catch (err) {
-        console.error("Error fetching photos:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPhotos();
+        )
+        .eq("album_id", albumId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      setPhotos(data || []);
+    } catch (err) {
+      console.error("Error fetching photos:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [albumId]);
 
-  // useEffect(() => {
-  //   fetch("/api/tags")
-  //     .then((res) => res.json())
-  //     .then(setTags);
-  // }, []);
+  useEffect(() => {
+    fetchPhotos();
+  }, [fetchPhotos]);
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await fetch("/api/tags", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const res = await fetch("/api/tags");
 
         if (!res.ok) {
           const err = await res.json();

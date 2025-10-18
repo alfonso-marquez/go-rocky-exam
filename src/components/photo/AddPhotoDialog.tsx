@@ -53,8 +53,8 @@ const formSchema = z.object({
     .refine((file) => file?.type?.startsWith("image/"), {
       message: "Only image files are allowed (jpg, png)",
     })
-    .refine((file) => file?.size <= 20 * 1024 * 1024, {
-      message: "File size must be less than or equal to 20MB",
+    .refine((file) => file?.size <= 10 * 1024 * 1024, {
+      message: "File size must be less than or equal to 10MB",
     }),
 });
 
@@ -111,9 +111,9 @@ export default function AddPhotoDialog({
       }
     } catch (error) {
       toast.error("Error!", {
-        description:
-          error instanceof Error ? error.message : "Something went wrong.",
+        description: "Upload failed. Please try again.",
       });
+      console.error(error instanceof Error ? error.message : "Upload failed");
     } finally {
       setOpen(false);
       form.reset();
