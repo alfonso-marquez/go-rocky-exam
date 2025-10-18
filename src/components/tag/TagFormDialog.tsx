@@ -11,37 +11,43 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Tag as TagInterface } from "./types";
-import { Tag } from "lucide-react";
+import { Tag } from "../photo/types";
+import { Tag as TagIcon } from "lucide-react";
+import { useState } from "react";
 
-export default function TagFormDialog() {
+export default function TagFormDialog({
+  tags,
+  setTags,
+}: {
+  tags: Tag[];
+  setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+}) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tags, setTags] = useState<TagInterface[]>([]);
+  // const [tags, setTags] = useState<TagInterface[]>([]);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const res = await fetch("/api/tags", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+  // useEffect(() => {
+  //   const fetchTags = async () => {
+  //     try {
+  //       const res = await fetch("/api/tags", {
+  //         method: "GET",
+  //         headers: { "Content-Type": "application/json" },
+  //       });
 
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to fetch tags");
-        }
+  //       if (!res.ok) {
+  //         const err = await res.json();
+  //         throw new Error(err.error || "Failed to fetch tags");
+  //       }
 
-        const tags = await res.json();
-        setTags(tags.map((tag: TagInterface) => ({ ...tag, selected: false })));
-      } catch (error) {
-        console.error(error instanceof Error ? error.message : "Unknown error");
-      }
-    };
-    fetchTags();
-  }, []);
+  //       const tags = await res.json();
+  //       setTags(tags.map((tag: TagInterface) => ({ ...tag, selected: false })));
+  //     } catch (error) {
+  //       console.error(error instanceof Error ? error.message : "Unknown error");
+  //     }
+  //   };
+  //   fetchTags();
+  // }, []);
 
   // change later
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -64,7 +70,7 @@ export default function TagFormDialog() {
       const newTag = await res.json();
 
       // Optionally update local state to show the new tag
-      setTags((prev: TagInterface[]) => [...prev, ...newTag]);
+      setTags((prev: Tag[]) => [...prev, ...newTag]);
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {
@@ -76,7 +82,7 @@ export default function TagFormDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Tag /> Manage Tags
+          <TagIcon /> Manage Tags
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -106,7 +112,7 @@ export default function TagFormDialog() {
           {tags.length === 0 ? (
             <span>No tags found</span>
           ) : (
-            tags.map((tag: TagInterface) => (
+            tags.map((tag: Tag) => (
               <Badge key={`tag-${tag.id}`} variant="secondary">
                 {tag.name}
               </Badge>

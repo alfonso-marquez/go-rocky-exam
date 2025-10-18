@@ -5,7 +5,6 @@ export default function HeroPhoto({
 }: {
   isAuthenticated: boolean;
 }) {
-  console.log("isAuthenticated", isAuthenticated);
   return (
     <section className="py-32">
       <div className="container text-center">

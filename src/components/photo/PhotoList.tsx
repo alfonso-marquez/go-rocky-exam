@@ -58,7 +58,7 @@ export default function PhotoList() {
                 />
 
                 <div className="absolute inset-0 bg-black/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center pointer-events-none group-hover:pointer-events-auto z-10">
-                  <p className="text-white text-lg font-semibold">
+                  <p className="text-white text-lg font-semibold text-center justify">
                     {photo.title}
                   </p>
                   <p className="text-white text-lg">{photo.description}</p>
