@@ -81,12 +81,3 @@ export default function LoginPage() {
     </AccountLayout>
   );
 }
-
-<div className="flex w-full flex-col gap-2">
-  <a
-    className="text-sm place-self-center hover:underline"
-    href="/auth/forgetPassword"
-  >
-    Forgot Password?
-  </a>
-</div>;

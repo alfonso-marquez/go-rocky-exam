@@ -8,6 +8,7 @@ import AccountLayout from "@/components/layouts/Account/AccountLayout";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string[]> | null>(null);
@@ -28,10 +29,15 @@ export default function RegisterPage() {
 
     if (result.error) {
       setErrors(result.error);
+      toast.error("User Registration Failed", {
+        description: "Please try again.",
+      });
       return;
     }
 
-    setMessage("✅ Account created! Please check your email to confirm.");
+    toast.success("User Registration Successful!", {
+      description: "Please check your email to confirm your account.",
+    });
     setTimeout(() => {
       router.push("/");
     }, 4000); // short delay for UX feedback

@@ -80,7 +80,7 @@ export async function register(formData: FormData): Promise<RegisterResponse> {
 
     return {
       error: {
-        general: ["Registering user failed. Please try again."],
+        general: [error.message],
       },
     };
   }

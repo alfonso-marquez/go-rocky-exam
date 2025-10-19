@@ -40,7 +40,7 @@ export async function login(formData: FormData): Promise<LoginResponse> {
   if (error) {
     return {
       error: {
-        general: ["Invalid email or password. Please try again."],
+        general: [error.message],
       },
     };
   }
