@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import AccountLayout from "@/components/layouts/Account/AccountLayout";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string[]> | null>(null);
@@ -23,12 +24,13 @@ export default function LoginPage() {
     if (result.error) {
       setErrors(result.error);
       setLoading(false);
+      toast.error("Login Failed! Please try again.");
       return;
+    } else {
+      setLoading(false);
+      toast.success("Login Successful!");
+      router.push("/"); // client-side redirect after notification
     }
-
-    setLoading(false);
-
-    router.push("/");
   }
 
   return (

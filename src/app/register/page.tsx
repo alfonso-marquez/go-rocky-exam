@@ -108,7 +108,7 @@ export default function RegisterPage() {
           {loading ? (
             <>
               <Spinner />
-              <span>Signin in</span>
+              <span>Signing in</span>
             </>
           ) : (
             "Sign up"

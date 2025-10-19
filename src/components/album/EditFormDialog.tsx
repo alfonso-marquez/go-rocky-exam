@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
 import { Button } from "@/components/ui/button";
@@ -28,13 +28,15 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
 import { Album } from "./types";
+import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 interface EditAlbumProps {
   album: Album;
-  setAlbums: React.Dispatch<React.SetStateAction<Album[]>>;
+  onAlbumEdit: (album: Album) => void;
 }
 
-export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
+export default function EditFormDialog({ album, onAlbumEdit }: EditAlbumProps) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -69,39 +71,35 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
 
       const { data, error } = await supabase
         .from("albums")
-        .upsert(
-          {
-            id: album.id, // include if editing
-            name: values.name,
-            description: values.description ?? "",
-            user_id: user.id,
-          },
-          { onConflict: "id" }, // update if same id exists
-        )
+        .update({
+          name: values.name,
+          description: values.description ?? "",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", album.id)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        toast.error("Update Failed.", {
+          description: "Please try again.",
+        });
+        form.reset({
+          name: album.name,
+          description: album.description,
+        });
+      } else if (!error) {
+        const updatedAlbum: Album = {
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          photos: album.photos || [], // keep existing photos
+        };
 
-      // Update state
-      if (album.id) {
-        // Editing existing
-        setAlbums((prev) =>
-          prev.map((a) =>
-            a.id === data.id
-              ? {
-                  ...a,
-                  name: data.name,
-                  description: data.description,
-                  // leave a.photos as-is to prevent cover change
-                  photos: a.photos,
-                }
-              : a,
-          ),
-        );
-      } else {
-        // Adding new
-        setAlbums((prev) => [...prev, data]);
+        onAlbumEdit(updatedAlbum);
+        toast.success("Success!", {
+          description: "Your album has been updated successfully.",
+        });
       }
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Unknown error");
@@ -110,6 +108,11 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    const el = document.getElementById("name") as HTMLInputElement | null;
+    if (el) el.selectionStart = el.selectionEnd = el.value.length;
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -137,7 +140,7 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} autoComplete="name" />
+                    <Input {...field} />
                   </FormControl>
                   <FormDescription>Album name</FormDescription>
                   <FormMessage />
@@ -160,8 +163,15 @@ export default function EditFormDialog({ album, setAlbums }: EditAlbumProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={loading} className="mt-4">
-              {loading ? <span>Loading...</span> : <span>Submit</span>}
+            <Button type="submit" className="mt-4">
+              {loading ? (
+                <>
+                  <Spinner />
+                  <span>Updating</span>
+                </>
+              ) : (
+                "Update"
+              )}
             </Button>
           </form>
         </Form>

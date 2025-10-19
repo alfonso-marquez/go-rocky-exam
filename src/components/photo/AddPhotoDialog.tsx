@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Photo } from "./types";
+import { Spinner } from "../ui/spinner";
 
 // Zod Schema for Validation
 const noFutureDateString = z
@@ -125,8 +126,8 @@ export default function AddPhotoDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Plus />
+        <Button variant="default">
+          <Plus /> Add Photo
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto max-h-screen">
@@ -136,20 +137,6 @@ export default function AddPhotoDialog({
             Create and upload a new photo and add it to the list.
           </DialogDescription>
         </DialogHeader>
-
-        {/* Display API Error (if any) */}
-        {/* {apiError && (
-          <div className="text-red-500 font-semibold text-sm mb-4">
-            {apiError}
-          </div>
-        )}
-        {preview && (
-          <img
-            src={preview.startsWith("blob:") ? preview : getPhotoUrl(preview)}
-            className="mt-2 w-full max-h-100 object-cover rounded-md"
-          />
-        )} */}
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -215,7 +202,10 @@ export default function AddPhotoDialog({
               className="mt-4"
             >
               {isUploading ? (
-                <span>Uploading...</span>
+                <>
+                  <Spinner />
+                  <span>Uploading</span>
+                </>
               ) : loading ? (
                 <span>Loading...</span>
               ) : (

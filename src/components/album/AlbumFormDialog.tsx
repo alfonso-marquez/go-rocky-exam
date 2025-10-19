@@ -14,13 +14,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
+import { Spinner } from "../ui/spinner";
+import { Album } from "./types";
 
-export default function AlbumFormDialog() {
+export default function AlbumFormDialog({
+  onAlbumCreate,
+}: {
+  onAlbumCreate: (newTag: Album) => void;
+}) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!name.trim()) return alert("Album name required");
     setLoading(true);
 
@@ -29,28 +37,37 @@ export default function AlbumFormDialog() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { error } = await supabase.from("albums").insert({
-      name,
-      description,
-      user_id: user?.id,
-    });
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("albums")
+        .insert({ name, description, user_id: user?.id })
+        .select(); // ensure all needed fields
 
-    if (error) {
-      console.error("Create failed:", error);
-      alert("Error creating album");
-    } else {
+      if (error || !data?.[0]) throw error || new Error("No album returned");
+
+      const newAlbum = {
+        ...data[0],
+        photos: [], // default empty array
+      };
+
+      onAlbumCreate(newAlbum); // update parent state
       setName("");
       setDescription("");
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error creating album"); // ha
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Plus />
+        <Button variant="default">
+          <Plus /> Add Album
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -83,7 +100,14 @@ export default function AlbumFormDialog() {
               />
             </div>
             <Button type="submit" disabled={loading} className="mt-4">
-              {loading ? <span>Loading...</span> : <span>Submit</span>}
+              {loading ? (
+                <>
+                  <Spinner />
+                  <span>Creating Album</span>
+                </>
+              ) : (
+                <span>Create Album</span>
+              )}
             </Button>
           </div>
         </form>

@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,44 +21,21 @@ import AlbumDeleteDialog from "./AlbumDeleteDialog";
 import LoadingState from "../LoadingState";
 import EmptyState from "../EmptyState";
 
-export default function AlbumList() {
-  const [albums, setAlbums] = useState<Album[]>([]);
-  const [loading, setLoading] = useState(false);
+type AlbumListProps = {
+  albums: Album[];
+  loading: boolean;
+  onAlbumEdit: (album: Album) => void;
+  onAlbumDelete: (id: string) => void;
+};
+
+export default function AlbumList({
+  albums,
+  loading,
+  onAlbumEdit,
+  onAlbumDelete,
+}: AlbumListProps) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedId, setSelectedId] = useState("");
-  const supabase = createClient();
-
-  const fetchAlbums = useCallback(async () => {
-    setLoading(true);
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("albums")
-        .select(
-          `
-                    *,
-                    photos (
-                    url,
-                    created_at
-                    )
-                `,
-        )
-        .eq("user_id", user.id)
-        .order("id", { ascending: false });
-      setAlbums(data || []);
-    } catch (error) {
-      console.error("Error fetching albums:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [supabase]);
-
-  useEffect(() => {
-    fetchAlbums();
-  }, [fetchAlbums]);
 
   if (loading) {
     return <LoadingState count={3} height={300} width={250} />;
@@ -73,11 +49,12 @@ export default function AlbumList() {
     <div className="container mx-auto p-6">
       <AlbumDeleteDialog
         open={openModal}
+        id={selectedId || ""}
         onOpenChange={setOpenModal}
-        id={selectedId}
-        fetchAlbums={fetchAlbums}
+        onAlbumDelete={onAlbumDelete}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {albums.length === 0 && <EmptyState type="album" />}
         {albums.map((album) => {
           const latestPhoto = album.photos?.sort(
             (a, b) =>
@@ -112,9 +89,7 @@ export default function AlbumList() {
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      {/* <DropdownMenuItem variant="destructive" onClick={() => deleteAlbum(album.id?.toString())}> */}
                       <DropdownMenuItem>
-                        {/* <AlbumDeleteDialog /> */}
                         <button
                           onClick={() => {
                             setSelectedId(album.id);
@@ -147,7 +122,7 @@ export default function AlbumList() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-md truncate">{album.name}</h3>
                 </div>
-                <EditFormDialog album={album} setAlbums={setAlbums} />
+                <EditFormDialog album={album} onAlbumEdit={onAlbumEdit} />
               </div>
             </Card>
           );

@@ -3,18 +3,27 @@ import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 const GET = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
   try {
-    const tags = await getAlbums();
-    return NextResponse.json(tags, { status: 200 });
+    const albums = await getAlbums(Number(user.id));
+    return NextResponse.json(albums, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
 
-// POST - create a new tag (authenticated)
+// POST - create a new album (authenticated)
 const POST = async (req: Request) => {
   const supabase = await createClient();
   const {
@@ -30,7 +39,7 @@ const POST = async (req: Request) => {
   if (!name)
     return NextResponse.json(
       { error: "Album name is required" },
-      { status: 400 },
+      { status: 400 }
     );
 
   try {
@@ -39,12 +48,12 @@ const POST = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
 
-// PATCH - update a tag (authenticated)
+// PATCH - update a album (authenticated)
 const PATCH = async (req: Request) => {
   const supabase = await createClient();
   const {
@@ -60,7 +69,7 @@ const PATCH = async (req: Request) => {
   if (!id || !name)
     return NextResponse.json(
       { error: "Album id and name are required" },
-      { status: 400 },
+      { status: 400 }
     );
 
   try {
@@ -69,12 +78,12 @@ const PATCH = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
 
-// DELETE - delete a tag (authenticated)
+// DELETE - delete a album (authenticated)
 const DELETE = async (req: Request) => {
   const supabase = await createClient();
   const {
@@ -90,7 +99,7 @@ const DELETE = async (req: Request) => {
   if (!id)
     return NextResponse.json(
       { error: "Album id is required" },
-      { status: 400 },
+      { status: 400 }
     );
 
   try {
@@ -99,7 +108,7 @@ const DELETE = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };

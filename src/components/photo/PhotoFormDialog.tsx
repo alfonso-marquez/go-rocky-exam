@@ -27,6 +27,8 @@ import { PencilIcon } from "lucide-react";
 import { Photo, Tag } from "./types";
 import { TagMultiSelect } from "../tag/TagMultiSelect";
 import { createClient } from "@/utils/supabase/client";
+import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
 interface EditPhotoProps {
   photo: Photo;
   setPhotos: React.Dispatch<React.SetStateAction<Photo[]>>;
@@ -71,9 +73,12 @@ export default function EditFormDialog({
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (!user) throw new Error("User not found");
+      if (!user) {
+        toast.error("User not found");
+        throw new Error("User not found");
+      }
 
-      // 1️⃣ Update the photo
+      // Update the photo
       const { data: updatedPhoto, error: photoError } = await supabase
         .from("photos")
         .update({
@@ -84,9 +89,14 @@ export default function EditFormDialog({
         .select()
         .single();
 
-      if (photoError) throw photoError;
+      if (photoError) {
+        toast.error("Update Failed.", {
+          description: photoError.message,
+        });
+        throw photoError;
+      }
 
-      // 2️⃣ Check existing tags
+      // Check existing tags
       const { data: existingTags } = await supabase
         .from("tags")
         .select("id, name")
@@ -96,21 +106,21 @@ export default function EditFormDialog({
       const newTags =
         values.tags?.filter((t) => !existingTagNames.includes(t)) || [];
 
-      // 3️⃣ Insert new tags if needed
+      // Insert new tags if needed
       if (newTags.length > 0) {
         await supabase.from("tags").insert(newTags.map((name) => ({ name })));
       }
 
-      // 4️⃣ Get all tag IDs for the selected tags
+      // Get all tag IDs for the selected tags
       const { data: allTags } = await supabase
         .from("tags")
         .select("id, name")
         .in("name", values.tags || []);
 
-      // 5️⃣ Clear old relations
+      // Clear old relations
       await supabase.from("photo_tags").delete().eq("photo_id", photo.id);
 
-      // 6️⃣ Link new tags
+      // Link new tags
       const tagLinks = allTags?.map((t) => ({
         photo_id: photo.id,
         tag_id: t.id,
@@ -118,7 +128,7 @@ export default function EditFormDialog({
 
       await supabase.from("photo_tags").insert(tagLinks);
 
-      // 7️⃣ Update state locally
+      // Update state locally
       setPhotos((prev) =>
         prev.map((p) =>
           p.id === updatedPhoto.id
@@ -126,8 +136,13 @@ export default function EditFormDialog({
             : p,
         ),
       );
+      toast.success("Success!", {
+        description: "Your photo has been updated successfully.",
+      });
     } catch (error) {
-      console.error(error);
+      toast.error("Update Failed.", {
+        description: error instanceof Error ? error.message : "Please try again.",
+      });
     } finally {
       setLoading(false);
       setOpen(false);
@@ -213,7 +228,14 @@ export default function EditFormDialog({
             />
 
             <Button type="submit" disabled={loading} className="mt-4">
-              {loading ? "Saving..." : "Submit"}
+              {loading ? (
+                <>
+                  <Spinner />
+                  <span>Updating</span>
+                </>
+              ) : (
+                "Update"
+              )}
             </Button>
           </form>
         </Form>

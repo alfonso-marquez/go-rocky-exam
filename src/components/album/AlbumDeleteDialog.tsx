@@ -13,12 +13,14 @@ export default function AlbumDeleteDialog({
   open,
   onOpenChange,
   id,
-  fetchAlbums,
+  onAlbumDelete,
+  // fetchAlbums,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   id: string;
-  fetchAlbums: () => void;
+  onAlbumDelete: (id: string) => void;
+  // fetchAlbums: () => void;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -27,10 +29,18 @@ export default function AlbumDeleteDialog({
     setLoading(true);
     const supabase = createClient();
     const { error } = await supabase.from("albums").delete().eq("id", id);
+
+    if (!error) {
+      onAlbumDelete(id);
+    }
+
+    if (error) {
+      console.error(error);
+    }
+
     onOpenChange(false);
     setLoading(false);
 
-    if (!error) fetchAlbums();
     return;
   };
 

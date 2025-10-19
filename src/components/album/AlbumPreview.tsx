@@ -48,24 +48,31 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
     fetchPhotos();
   }, [fetchPhotos]);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const res = await fetch("/api/tags");
+  const fetchTags = useCallback(async () => {
+    try {
+      const res = await fetch("/api/tags");
 
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to fetch tags");
-        }
-
-        const tags = await res.json();
-        setTags(tags.map((tag: Tag) => ({ ...tag, selected: false })));
-      } catch (error) {
-        console.error(error instanceof Error ? error.message : "Unknown error");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to fetch tags");
       }
-    };
-    fetchTags();
+
+      const tags = await res.json();
+      setTags(tags.map((tag: Tag) => ({ ...tag, selected: false })));
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : "Unknown error");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchTags();
+  }, [fetchTags]);
+
+  // handle new tag creation
+  const handleTagCreated = (newTag: Tag) => {
+    setTags((prev) => [...prev, newTag]); // optional optimistic update
+    fetchTags(); // refetch to ensure DB sync
+  };
 
   const handlePhotoAdded = (newPhoto: Photo) => {
     // change type
@@ -76,14 +83,25 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
     return <LoadingState count={3} width={200} />;
   }
 
-  if (!loading && photos.length > 0) {
-    return <EmptyState type="photo" />;
+  if (!loading && photos.length === 0) {
+    return (
+      <>
+        <div className="flex gap-4 justify-end p-4">
+          <TagFormDialog tags={tags} onTagCreate={handleTagCreated} />
+          <AddPhotoDialog
+            albumId={String(albumId)}
+            onPhotoAdded={handlePhotoAdded}
+          />
+        </div>
+        <EmptyState type="photo" />
+      </>
+    );
   }
 
   return (
     <section>
       <div className="flex gap-4 justify-end p-4">
-        <TagFormDialog tags={tags} setTags={setTags} />
+        <TagFormDialog tags={tags} onTagCreate={handleTagCreated} />
         <AddPhotoDialog
           albumId={String(albumId)}
           onPhotoAdded={handlePhotoAdded}

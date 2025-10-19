@@ -2,9 +2,12 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-const getAlbums = async () => {
+const getAlbums = async (id: number) => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("albums").select();
+  const { data, error } = await supabase
+    .from("albums")
+    .select()
+    .eq("user_id", id);
   if (error) throw new Error(error?.message || "Failed to fetch albums");
   return data || []; // always return array, safe for UI
 };

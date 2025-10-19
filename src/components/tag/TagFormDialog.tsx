@@ -15,13 +15,15 @@ import { Badge } from "@/components/ui/badge";
 import { Tag } from "../photo/types";
 import { Tag as TagIcon } from "lucide-react";
 import { useState } from "react";
+import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
 
 export default function TagFormDialog({
   tags,
-  setTags,
+  onTagCreate,
 }: {
   tags: Tag[];
-  setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+  onTagCreate: (newTag: Tag) => void;
 }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,13 +44,20 @@ export default function TagFormDialog({
 
       if (!res.ok) {
         const err = await res.json();
+        toast.error("Tag Creation Failed", {
+          description: err.error,
+        });
         throw new Error(err.error || "Failed to create tag");
       }
 
       const newTag = await res.json();
+      onTagCreate(newTag);
+      toast.success("Success!", {
+        description: "Your tag has been created successfully.",
+      });
 
       // Optionally update local state to show the new tag
-      setTags((prev: Tag[]) => [...prev, newTag]);
+      // setTags((prev: Tag[]) => [...prev, newTag]);
     } catch (error) {
       console.error(error instanceof Error ? error.message : "Unknown error");
     } finally {
@@ -81,21 +90,32 @@ export default function TagFormDialog({
                 required
               />
               <Button type="submit" disabled={loading} className="w-1/3">
-                {loading ? <span>Loading...</span> : <span>Add Tag</span>}
+                {loading ? (
+                  <>
+                    <Spinner />
+                    <span>Creating Tag</span>
+                  </>
+                ) : (
+                  "Create Tag"
+                )}
               </Button>
             </div>
           </div>
         </form>
         <div className="flex flex-wrap gap-2 mt-5">
-          {tags.length === 0 ? (
-            <span>No tags found</span>
+          {tags.length === 0 && !loading ? (
+            <span>No Tags yet.</span>
           ) : (
-            tags.map((tag: Tag) => (
-              <Badge key={`tag-${tag.id}`} variant="secondary">
-                {tag.name}
-              </Badge>
-            ))
+            tags.map((tag: Tag) =>
+              tag.name ? (
+                <Badge key={tag.id} variant="secondary">
+                  {tag.name}
+                </Badge>
+              ) : null,
+            )
           )}
+
+          {loading && <Badge variant="default">Creating...</Badge>}
         </div>
       </DialogContent>
     </Dialog>
