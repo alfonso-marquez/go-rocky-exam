@@ -28,11 +28,14 @@ export function Navbar({ user }: NavbarProps) {
   const router = useRouter();
 
   const redirectToLogin = async () => {
+    router.push("/login");
+    router.refresh();
+  };
+
+  const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
-      // Navigate to login
-      router.push("/login");
-      // Refresh the server components after redirect
+      router.push("/");
       router.refresh();
     }
   };
@@ -76,7 +79,7 @@ export function Navbar({ user }: NavbarProps) {
                         <Button
                           variant="ghost"
                           className="cursor-pointer hover:bg-accent hover:text-accent-foreground focus:bg-accent"
-                          onClick={redirectToLogin}
+                          onClick={logout}
                         >
                           Logout
                         </Button>

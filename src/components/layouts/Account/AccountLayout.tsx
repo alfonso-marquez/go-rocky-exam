@@ -17,7 +17,7 @@ export default function AccountLayout({
             <h1 className="text-xl font-semibold">{heading}</h1>
 
             {/* Form fields passed here */}
-            <form className="w-full flex flex-col gap-2">{children}</form>
+            <div className="w-full flex flex-col gap-2">{children}</div>
           </div>
 
           {footerText && footerLinkText && footerLinkUrl && (

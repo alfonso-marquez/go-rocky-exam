@@ -2,22 +2,47 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/utils/supabase/server";
+import { z } from "zod";
 
-export async function login(formData: FormData) {
+export type LoginResponse = {
+  error?: Record<string, string[]>;
+};
+
+const loginSchema = z.object({
+  email: z.email({ pattern: z.regexes.email }),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export async function login(formData: FormData): Promise<LoginResponse> {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
-  const { error } = await supabase.auth.signInWithPassword(data);
+  const parsed = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!parsed.success) {
+    // Return validation errors to the form (no redirect)
+    const fieldErrors: Record<string, string[]> = {};
+
+    parsed.error.issues.forEach((issue) => {
+      const field = issue.path[0] as string;
+      if (!fieldErrors[field]) fieldErrors[field] = [];
+      fieldErrors[field].push(issue.message);
+    });
+    return { error: fieldErrors };
+  }
+  const { email, password } = parsed.data;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect("/error");
+    return {
+      error: {
+        general: ["Invalid email or password. Please try again."],
+      },
+    };
   }
 
   revalidatePath("/", "layout");
