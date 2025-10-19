@@ -66,7 +66,6 @@ export default function AddPhotoDialog({
   albumId: string;
   onPhotoAdded?: (photo: Photo) => void; // change type
 }) {
-  const [loading, setLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -83,7 +82,6 @@ export default function AddPhotoDialog({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!file) return;
     setIsUploading(true);
-    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -119,7 +117,6 @@ export default function AddPhotoDialog({
       setOpen(false);
       form.reset();
       setIsUploading(false);
-      setLoading(false);
     }
   };
 
@@ -206,8 +203,6 @@ export default function AddPhotoDialog({
                   <Spinner />
                   <span>Uploading</span>
                 </>
-              ) : loading ? (
-                <span>Loading...</span>
               ) : (
                 <span>Upload</span>
               )}

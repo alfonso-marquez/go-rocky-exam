@@ -141,7 +141,8 @@ export default function EditFormDialog({
       });
     } catch (error) {
       toast.error("Update Failed.", {
-        description: error instanceof Error ? error.message : "Please try again.",
+        description:
+          error instanceof Error ? error.message : "Please try again.",
       });
     } finally {
       setLoading(false);

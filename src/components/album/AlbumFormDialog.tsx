@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { Spinner } from "../ui/spinner";
 import { Album } from "./types";
+import { toast } from "sonner";
 
 export default function AlbumFormDialog({
   onAlbumCreate,
@@ -55,9 +56,13 @@ export default function AlbumFormDialog({
       setName("");
       setDescription("");
       setOpen(false);
-    } catch (err) {
-      console.error(err);
-      alert("Error creating album"); // ha
+
+      toast.success("Album created successfully.");
+    } catch (error) {
+      toast.error("Album creation failed.");
+      console.error(
+        error instanceof Error ? error.message : "Album creation failed.",
+      );
     } finally {
       setLoading(false);
     }

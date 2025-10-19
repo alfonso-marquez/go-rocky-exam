@@ -18,7 +18,7 @@ const GET = async () => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -39,7 +39,7 @@ const POST = async (req: Request) => {
   if (!name)
     return NextResponse.json(
       { error: "Album name is required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   try {
@@ -48,7 +48,7 @@ const POST = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -69,7 +69,7 @@ const PATCH = async (req: Request) => {
   if (!id || !name)
     return NextResponse.json(
       { error: "Album id and name are required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   try {
@@ -78,7 +78,7 @@ const PATCH = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -99,7 +99,7 @@ const DELETE = async (req: Request) => {
   if (!id)
     return NextResponse.json(
       { error: "Album id is required" },
-      { status: 400 }
+      { status: 400 },
     );
 
   try {
@@ -108,7 +108,7 @@ const DELETE = async (req: Request) => {
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

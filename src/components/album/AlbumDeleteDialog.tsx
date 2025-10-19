@@ -8,6 +8,8 @@ import {
 } from "../ui/dialog";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 export default function AlbumDeleteDialog({
   open,
@@ -32,10 +34,11 @@ export default function AlbumDeleteDialog({
 
     if (!error) {
       onAlbumDelete(id);
+      toast.success("Album deleted successfully.");
     }
 
     if (error) {
-      console.error(error);
+      toast.error("Album deletion failed.");
     }
 
     onOpenChange(false);
@@ -56,7 +59,14 @@ export default function AlbumDeleteDialog({
         <form onSubmit={handleDelete}>
           <div className="flex flex-col gap-6">
             <Button type="submit" disabled={loading} variant="destructive">
-              {loading ? <span>Loading...</span> : <span>Confirm Delete</span>}
+              {loading ? (
+                <>
+                  <Spinner />
+                  <span>Deleting Album</span>
+                </>
+              ) : (
+                "Confirm Delete"
+              )}
             </Button>
           </div>
         </form>
