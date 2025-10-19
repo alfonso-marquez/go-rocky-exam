@@ -36,8 +36,8 @@ export default function LoginPage() {
   return (
     <AccountLayout
       heading="Login"
-      footerText="Need an account?"
-      footerLinkText="Register"
+      footerText="Don't have an account?"
+      footerLinkText="Create Account"
       footerLinkUrl="/register"
     >
       <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">

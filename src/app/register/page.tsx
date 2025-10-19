@@ -45,13 +45,13 @@ export default function RegisterPage() {
 
   return (
     <AccountLayout
-      heading="Register"
+      heading="Sign Up to Get Started"
       footerText="Already have an account?"
       footerLinkText="Login"
       footerLinkUrl="/login"
     >
       <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">
-        <div className="flex w-full flex-col gap-2 my-2">
+        <div className="flex w-full flex-col gap-2 mt-4">
           <Label>First Name</Label>
           <Input
             type="text"
@@ -63,7 +63,7 @@ export default function RegisterPage() {
             <p className="text-sm text-red-500">{errors.first_name[0]}</p>
           )}
         </div>
-        <div className="flex w-full flex-col gap-2 my-2">
+        <div className="flex w-full flex-col gap-2  ">
           <Label>Last Name</Label>
           <Input
             type="text"
@@ -75,7 +75,7 @@ export default function RegisterPage() {
             <p className="text-sm text-red-500">{errors.last_name[0]}</p>
           )}
         </div>
-        <div className="flex w-full flex-col gap-2 my-2">
+        <div className="flex w-full flex-col gap-2 mt-4">
           <Label>Email</Label>
           <Input type="email" name="email" placeholder="Email" required />
           {errors?.email && (
@@ -83,7 +83,7 @@ export default function RegisterPage() {
           )}
         </div>
 
-        <div className="flex w-full flex-col gap-2 my-2">
+        <div className="flex w-full flex-col gap-2">
           <Label>Password</Label>
           <Input
             type="password"
@@ -108,10 +108,10 @@ export default function RegisterPage() {
           {loading ? (
             <>
               <Spinner />
-              <span>Signing in</span>
+              <span>Creating Account</span>
             </>
           ) : (
-            "Sign up"
+            "Create Account"
           )}
         </Button>
       </form>
