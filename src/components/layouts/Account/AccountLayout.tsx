@@ -1,5 +1,5 @@
 import { AccountLayoutProps } from "@/types/auth";
-import { Camera } from "lucide-react";
+import { LibraryBig } from "lucide-react";
 
 export default function AccountLayout({
   heading,
@@ -11,8 +11,8 @@ export default function AccountLayout({
   return (
     <section className="bg-muted h-screen">
       <div className="flex h-full items-center justify-center">
-        <div className="flex flex-col items-center gap-6 lg:justify-start">
-          <Camera className="h-12 w-12" />
+        <div className="flex flex-col items-center gap-2 lg:justify-start">
+          <LibraryBig className="h-12 w-12" />
           <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
             <h1 className="text-xl font-semibold">{heading}</h1>
 

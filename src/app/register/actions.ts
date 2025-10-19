@@ -1,42 +1,91 @@
 "use server";
-
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
+import { z } from "zod";
 
-export async function signup(formData: FormData) {
+export type RegisterResponse = {
+  error?: Record<string, string[]>;
+  success?: boolean;
+};
+
+const registerSchema = z.object({
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
+  email: z.email({ pattern: z.regexes.email }),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+async function checkUserExists(email: string) {
+  const supabaseAdmin = createAdminClient();
+  const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+
+  if (error) throw error;
+  return data.users.some((u) => u.email === email);
+}
+
+export async function register(formData: FormData): Promise<RegisterResponse> {
   const supabase = await createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    first_name: formData.get("first_name") as string,
-    last_name: formData.get("last_name") as string,
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
+  const parsed = registerSchema.safeParse({
+    first_name: formData.get("first_name"),
+    last_name: formData.get("last_name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-  // 1️⃣ Create auth user in Supabase
-  try {
-    const { error } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          first_name: data.first_name,
-          last_name: data.last_name,
-        },
-      },
+  if (!parsed.success) {
+    // Return validation errors to the form (no redirect)
+    const fieldErrors: Record<string, string[]> = {};
+
+    parsed.error.issues.forEach((issue) => {
+      const field = issue.path[0] as string;
+      if (!fieldErrors[field]) fieldErrors[field] = [];
+      fieldErrors[field].push(issue.message);
     });
+    return { success: false, error: fieldErrors };
+  }
+  const { first_name, last_name, email, password } = parsed.data;
 
-    if (error) throw error;
-  } catch (error) {
-    console.error("Auth sign-up failed:", error);
-    redirect("/error");
+  // Check if user already exists in Supabase
+  const exists = await checkUserExists(email);
+  if (exists) {
+    return {
+      success: false,
+      error: {
+        email: ["This email is already registered."],
+      },
+    };
   }
 
-  // Revalidate the homepage to show the new user in the list
+  // Create auth user in Supabase
+  const { error } = await supabase.auth.signUp({
+    email: email,
+    password: password,
+    options: {
+      data: {
+        first_name: first_name,
+        last_name: last_name,
+      },
+    },
+  });
 
-  revalidatePath("/", "layout");
-  redirect("/login");
+  if (error) {
+    if (error.message.includes("User already registered")) {
+      return {
+        error: {
+          email: ["This email is already registered. Try logging in instead."],
+        },
+      };
+    }
+
+    return {
+      error: {
+        general: ["Registering user failed. Please try again."],
+      },
+    };
+  }
+
+  return { success: true };
+  // revalidatePath("/", "layout");
+  // redirect("/");
 }

@@ -15,6 +15,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { LibraryBig } from "lucide-react";
 
 type NavbarProps = {
   user: {
@@ -43,7 +44,10 @@ export function Navbar({ user }: NavbarProps) {
   return (
     <div className="fixed top-0 left-0 w-full z-50 bg-background/90 backdrop-blur-sm shadow-md px-2 sm:px-4">
       <div className="max-w-7xl mx-auto py-3 flex justify-between items-center">
-        <div className="text-md font-bold hidden lg:block"> Portfolio</div>
+        <div className="text-md font-bold hidden lg:block">
+          {" "}
+          <LibraryBig className="mr-2" />{" "}
+        </div>
         <NavigationMenu viewport={false}>
           <NavigationMenuList>
             <NavigationMenuItem>
