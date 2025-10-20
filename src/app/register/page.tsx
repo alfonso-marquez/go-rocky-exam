@@ -23,24 +23,31 @@ export default function RegisterPage() {
     setMessage(null);
 
     const formData = new FormData(e.currentTarget);
-    const result = await register(formData);
 
-    setLoading(false);
+    try {
+      const result = await register(formData);
 
-    if (result.error) {
-      setErrors(result.error);
-      toast.error("User Registration Failed", {
-        description: "Please try again.",
+      if (result.error) {
+        setErrors(result.error);
+        toast.error("User Registration Failed", {
+          description: result.error?.message || "Please try again.",
+        });
+        return;
+      }
+
+      toast.success("User Registration Successful!", {
+        description: "Please check your email to confirm your account.",
       });
-      return;
-    }
 
-    toast.success("User Registration Successful!", {
-      description: "Please check your email to confirm your account.",
-    });
-    setTimeout(() => {
-      router.push("/");
-    }, 4000); // short delay for UX feedback
+      setTimeout(() => router.push("/"), 4000);
+    } catch (error) {
+      toast.error("User Registration Failed", {
+        description:
+          error instanceof Error ? error.message : "User Registration Failed",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
