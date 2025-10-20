@@ -30,7 +30,7 @@ export default function RegisterPage() {
       if (result.error) {
         setErrors(result.error);
         toast.error("User Registration Failed", {
-          description: result.error?.message || "Please try again.",
+          description: "Please try again.",
         });
         return;
       }
