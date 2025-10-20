@@ -29,9 +29,6 @@ export default function RegisterPage() {
 
       if (result.error) {
         setErrors(result.error);
-        toast.error("User Registration Failed", {
-          description: "Please try again.",
-        });
         return;
       }
 
@@ -41,9 +38,11 @@ export default function RegisterPage() {
 
       setTimeout(() => router.push("/"), 4000);
     } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error(error);
+      }
       toast.error("User Registration Failed", {
-        description:
-          error instanceof Error ? error.message : "User Registration Failed",
+        description: "User Registration Failed",
       });
     } finally {
       setLoading(false);
