@@ -2,7 +2,7 @@ import AlbumDetails from "@/components/album/AlbumDetails";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getAlbum } from "@/lib/albums";
 import { createClient } from "@/utils/supabase/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import React from "react";
 
 interface AlbumPreviewParams {
@@ -26,13 +26,9 @@ export default async function AlbumPreviewPage({
   let isUserAlbum = false;
 
   const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
 
-  if (authError || !authData?.user) {
-    redirect("/login");
-  }
-
-  if (authData.user.id === album.user_id) {
+  if (data.user?.id === album.user_id) {
     isUserAlbum = true;
   }
 
@@ -50,7 +46,7 @@ export default async function AlbumPreviewPage({
             <h3 className="text-gray-600 text-sm">
               {isUserAlbum
                 ? "You created this album"
-                : `Created by ${album?.profiles?.first_name || ""} ${album?.profiles?.first_name || ""}`}
+                : `Created by ${album?.profiles?.first_name || ""} ${album?.profiles?.last_name || ""}`}
             </h3>
           </CardHeader>
         </Card>

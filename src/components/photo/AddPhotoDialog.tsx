@@ -191,7 +191,7 @@ export default function AddPhotoDialog({
                       }}
                     />
                   </FormControl>
-                  <FormDescription>Upload a photo (max 20MB)</FormDescription>
+                  <FormDescription>Upload a photo (max 10MB)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

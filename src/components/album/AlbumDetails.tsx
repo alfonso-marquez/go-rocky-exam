@@ -121,7 +121,7 @@ export default function AlbumDetails({
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               fill
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+            <div className="absolute inset-0 bg-black/20 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
               {isUserAlbum && (
                 <PhotoFormDialog
                   photo={photo}
