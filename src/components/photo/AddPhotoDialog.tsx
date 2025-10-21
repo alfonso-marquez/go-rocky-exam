@@ -27,6 +27,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Photo } from "./types";
 import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 // Zod Schema for Validation
 const noFutureDateString = z
@@ -69,6 +70,7 @@ export default function AddPhotoDialog({
   const [isUploading, setIsUploading] = useState(false);
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,6 +106,7 @@ export default function AddPhotoDialog({
       // Add new photo to album list immediately
       if (data?.photo) {
         onPhotoAdded?.(data.photo);
+        router.refresh();
         toast.success("Success!", {
           description: "Your photo has been uploaded successfully.",
         });

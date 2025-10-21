@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
-
 import { Button } from "@/components/ui/button";
 
 import {
@@ -30,6 +29,7 @@ import { Pencil } from "lucide-react";
 import { Album } from "./types";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 interface EditAlbumProps {
   album: Album;
@@ -39,6 +39,7 @@ interface EditAlbumProps {
 export default function EditFormDialog({ album, onAlbumEdit }: EditAlbumProps) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const formSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 character."),
@@ -58,51 +59,34 @@ export default function EditFormDialog({ album, onAlbumEdit }: EditAlbumProps) {
     shouldUnregister: false, // keep values after unmount
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleUpdate = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
 
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     try {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) throw new Error("User not found");
-
-      const { data, error } = await supabase
-        .from("albums")
-        .update({
+      const res = await fetch("/api/albums", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: album.id,
           name: values.name,
-          description: values.description ?? "",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", album.id)
-        .select()
-        .single();
+          description: values.description,
+          user_id: user?.id,
+        }),
+      });
+      const updatedAlbum = await res.json();
 
-      if (error) {
-        toast.error("Update Failed.", {
-          description: "Please try again.",
-        });
-        form.reset({
-          name: album.name,
-          description: album.description,
-        });
-      } else if (!error) {
-        const updatedAlbum: Album = {
-          id: data.id,
-          name: data.name,
-          description: data.description,
-          photos: album.photos || [], // keep existing photos
-        };
-
-        onAlbumEdit(updatedAlbum);
-        toast.success("Success!", {
-          description: "Your album has been updated successfully.",
-        });
-      }
-    } catch (error) {
-      console.error(error instanceof Error ? error.message : "Unknown error");
+      onAlbumEdit({ ...updatedAlbum, photos: updatedAlbum.photos || [] });
+      toast.success("Success!", {
+        description: "Your album has been updated successfully.",
+      });
+      router.refresh();
+    } catch {
+      toast.error("Album Update failed. Please contact support.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -130,7 +114,7 @@ export default function EditFormDialog({ album, onAlbumEdit }: EditAlbumProps) {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={form.handleSubmit(handleUpdate)}
             className="space-y-8"
           >
             <FormField

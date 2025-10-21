@@ -6,13 +6,12 @@ import AlbumClientWrapper from "@/components/album/AlbumClientWrapper";
 export default async function Albums() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
-
-  let albums;
-  let errorMessage = null;
-
   if (error || !data?.user) {
     redirect("/login");
   }
+
+  let albums;
+  let errorMessage = null;
 
   const cookieStore = await cookies();
   // fetch initial albums

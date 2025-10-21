@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +28,7 @@ export default function AlbumFormDialog({
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,30 +41,26 @@ export default function AlbumFormDialog({
     } = await supabase.auth.getUser();
 
     setLoading(true);
+
     try {
-      const { data, error } = await supabase
-        .from("albums")
-        .insert({ name, description, user_id: user?.id })
-        .select(); // ensure all needed fields
+      const res = await fetch("/api/albums", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description, user_id: user?.id }),
+      });
 
-      if (error || !data?.[0]) throw error || new Error("No album returned");
+      if (!res.ok) throw new Error("Album creation failed");
+      const newAlbum = await res.json();
 
-      const newAlbum = {
-        ...data[0],
-        photos: [], // default empty array
-      };
-
-      onAlbumCreate(newAlbum); // update parent state
+      onAlbumCreate({ ...newAlbum, photos: newAlbum.photos || [] });
+      router.refresh(); //  re-fetch albums list (server component)
       setName("");
       setDescription("");
       setOpen(false);
 
       toast.success("Album created successfully.");
-    } catch (error) {
-      toast.error("Album creation failed.");
-      console.error(
-        error instanceof Error ? error.message : "Album creation failed.",
-      );
+    } catch {
+      toast.error("Album creation failed. Please contact support.");
     } finally {
       setLoading(false);
     }

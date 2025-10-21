@@ -1,6 +1,5 @@
 // Fetch all albums
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 
 const getAlbums = async (id: string) => {
   const supabase = await createClient();
@@ -20,54 +19,62 @@ const getAlbums = async (id: string) => {
   return data || []; // always return array, safe for UI
 };
 
-// GET single tag by id
+// GET single album by id
 const getAlbum = async (id: number) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("albums")
-    .select()
+    .select(`*, profiles (first_name, last_name)`)
     .eq("id", id)
     .single();
   if (error) {
-    // Handle not found separately
     if (error.code === "PGRST116") {
-      // Supabase “no rows returned” code
       console.error(new Error(error.message || "404 Not Found"));
-      redirect("/albums");
+      // redirect("/albums");
     } else {
-      // Supabase “no rows returned” code
       console.error(new Error(error.message || "Internal Server Error"));
-      redirect("/albums");
     }
   }
-  return data; // single object or throws
+  return data;
 };
 
-// CREATE tag
-const createAlbum = async (name: string) => {
+const createAlbum = async (
+  name: string,
+  description: string,
+  userId: string,
+) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("albums")
-    .insert({ name })
-    .select();
+    .insert({ name, description, user_id: userId })
+    .select()
+    .single();
   if (error) throw new Error(error?.message || "Failed to create album");
   return data || []; // return array of created albums
 };
 
-// UPDATE tag
-const updateAlbum = async (id: number, name: string) => {
+const updateAlbum = async (id: number, name: string, description: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("albums")
-    .update({ name })
+    .update({ name, description, updated_at: new Date().toISOString() })
     .eq("id", id)
-    .select();
+    .select(
+      `id,
+      name,
+      description,
+      photos (
+        id,
+        url,
+        created_at
+      )`,
+    )
+    .single();
   if (error)
     throw new Error(error.message || `Failed to update album with id ${id}`);
   return data || []; // return array of updated albums
 };
 
-// DELETE tag
 const deleteAlbum = async (id: number) => {
   const supabase = await createClient();
   const { data, error } = await supabase

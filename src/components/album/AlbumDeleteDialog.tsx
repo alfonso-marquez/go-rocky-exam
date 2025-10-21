@@ -7,44 +7,46 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 export default function AlbumDeleteDialog({
   open,
   onOpenChange,
   id,
   onAlbumDelete,
-  // fetchAlbums,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   id: string;
   onAlbumDelete: (id: string) => void;
-  // fetchAlbums: () => void;
 }) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const supabase = createClient();
-    const { error } = await supabase.from("albums").delete().eq("id", id);
 
-    if (!error) {
+    try {
+      await fetch("/api/albums", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+
       onAlbumDelete(id);
-      toast.success("Album deleted successfully.");
+      toast.success("Success!", {
+        description: "Your album has been deleted successfully.",
+      });
+      router.refresh();
+    } catch {
+      toast.error("Album deletion failed. Please contact support.");
+    } finally {
+      setLoading(false);
+      onOpenChange(false);
     }
-
-    if (error) {
-      toast.error("Album deletion failed.");
-    }
-
-    onOpenChange(false);
-    setLoading(false);
-
-    return;
   };
 
   return (

@@ -29,7 +29,8 @@ export default function AlbumClientWrapper({
 
   const handleAlbumCreated = (newAlbum: Album) => {
     setLoading(true);
-    setAlbums((prev) => [...prev, newAlbum]); // update state immediately
+    // Update albums state immutably
+    setAlbums((prev) => [newAlbum, ...prev]);
     setLoading(false);
   };
 

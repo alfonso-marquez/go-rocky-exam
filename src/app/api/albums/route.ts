@@ -35,7 +35,7 @@ const POST = async (req: Request) => {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { name } = await req.json();
+  const { name, description } = await req.json();
   if (!name)
     return NextResponse.json(
       { error: "Album name is required" },
@@ -43,7 +43,7 @@ const POST = async (req: Request) => {
     );
 
   try {
-    const data = await createAlbum(name);
+    const data = await createAlbum(name, description, user.id);
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -53,7 +53,7 @@ const POST = async (req: Request) => {
   }
 };
 
-// PATCH - update a album (authenticated)
+// PATCH - update album (authenticated)
 const PATCH = async (req: Request) => {
   const supabase = await createClient();
   const {
@@ -65,15 +65,10 @@ const PATCH = async (req: Request) => {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const { id, name } = await req.json();
-  if (!id || !name)
-    return NextResponse.json(
-      { error: "Album id and name are required" },
-      { status: 400 },
-    );
+  const { id, name, description } = await req.json();
 
   try {
-    const data = await updateAlbum(id, name);
+    const data = await updateAlbum(id, name, description);
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -83,7 +78,7 @@ const PATCH = async (req: Request) => {
   }
 };
 
-// DELETE - delete a album (authenticated)
+// DELETE - delete album (authenticated)
 const DELETE = async (req: Request) => {
   const supabase = await createClient();
   const {

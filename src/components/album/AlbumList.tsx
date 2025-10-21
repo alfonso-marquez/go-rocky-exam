@@ -65,7 +65,7 @@ export default function AlbumList({
           return (
             <Card
               key={album.id}
-              className="border rounded-lg flex flex-col items-center justify-between p-4 w-full aspect-square"
+              className="border rounded-md flex flex-col items-center justify-between p-4 w-full aspect-square"
             >
               <div className="action-buttons-div w-full flex justify-end mb-2">
                 <DropdownMenu>
