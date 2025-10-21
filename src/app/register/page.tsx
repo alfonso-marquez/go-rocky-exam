@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
       setTimeout(() => router.push("/"), 4000);
     } catch (error) {
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV == "development") {
         console.error(error);
       }
       toast.error("User Registration Failed", {

@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AlbumFormDialog from "./AlbumFormDialog";
 import AlbumList from "./AlbumList";
 import { Card, CardContent } from "@/components/ui/card";
 import { Album } from "./types";
+import { toast } from "sonner";
 export default function AlbumClientWrapper({
   initialAlbums,
+  errorMessage,
 }: {
   initialAlbums: Album[];
+  errorMessage: string | null;
 }) {
   const [albums, setAlbums] = useState<Album[]>(initialAlbums);
   const [loading, setLoading] = useState(false);
+
+  const hasShownToast = useRef(false);
+
+  useEffect(() => {
+    if (errorMessage && !hasShownToast.current) {
+      toast.error("Albums Fetch Failed", {
+        description: "There seems to be an error. Contact support.",
+      });
+      hasShownToast.current = true;
+    }
+  }, [errorMessage]);
 
   const handleAlbumCreated = (newAlbum: Album) => {
     setLoading(true);

@@ -13,7 +13,7 @@ const GET = async () => {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
   try {
-    const albums = await getAlbums(Number(user.id));
+    const albums = await getAlbums(user.id);
     return NextResponse.json(albums, { status: 200 });
   } catch (error) {
     return NextResponse.json(

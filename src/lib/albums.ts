@@ -2,11 +2,19 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-const getAlbums = async (id: number) => {
+const getAlbums = async (id: string) => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("albums")
-    .select()
+    .select(
+      `
+        *,
+        photos (
+        url,
+        created_at
+        )
+      `,
+    )
     .eq("user_id", id);
   if (error) throw new Error(error?.message || "Failed to fetch albums");
   return data || []; // always return array, safe for UI
@@ -55,7 +63,7 @@ const updateAlbum = async (id: number, name: string) => {
     .eq("id", id)
     .select();
   if (error)
-    throw new Error(error?.message || `Failed to update album with id ${id}`);
+    throw new Error(error.message || `Failed to update album with id ${id}`);
   return data || []; // return array of updated albums
 };
 
