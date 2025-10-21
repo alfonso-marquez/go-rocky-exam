@@ -53,7 +53,7 @@ export default function AlbumList({
         onOpenChange={setOpenModal}
         onAlbumDelete={onAlbumDelete}
       />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {albums.length === 0 && <EmptyState type="album" />}
         {albums.map((album) => {
           const latestPhoto = album.photos?.sort(
@@ -65,16 +65,12 @@ export default function AlbumList({
           return (
             <Card
               key={album.id}
-              className="border rounded-md flex flex-col items-center justify-between p-4 w-full aspect-square"
+              className="border rounded-md flex flex-col items-center justify-between px-4 w-full aspect-square relative"
             >
-              <div className="action-buttons-div w-full flex justify-end mb-2">
+              <div className="action-buttons-div w-full flex justify-end absolute right-4 z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      aria-label="More Options"
-                    >
+                    <Button variant="ghost" size="sm" aria-label="More Options">
                       <MoreHorizontalIcon />
                     </Button>
                   </DropdownMenuTrigger>
@@ -106,7 +102,7 @@ export default function AlbumList({
                 </DropdownMenu>
               </div>
 
-              <div className="w-full h-0 pb-[100%] relative rounded-md overflow-hidden mb-2">
+              <div className="w-full h-0 pb-[100%] relative rounded-md overflow-hidden">
                 <Link href={`/album-preview/${album.id}`} passHref>
                   <Image
                     src={coverUrl || "/placeholder.jpeg"} // <-- use first photo or placeholder
@@ -117,8 +113,7 @@ export default function AlbumList({
                   />
                 </Link>
               </div>
-
-              <div className="flex justify-between items-center w-full min-w-0 gap-2">
+              <div className="flex justify-between items-center w-full min-w-0">
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-md truncate">{album.name}</h3>
                 </div>
