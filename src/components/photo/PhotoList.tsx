@@ -12,6 +12,7 @@ import {
   EmptyDescription,
 } from "../ui/empty";
 import { Frown } from "lucide-react";
+import Link from "next/link";
 
 export default function PhotoList() {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -67,10 +68,10 @@ export default function PhotoList() {
       <div className="container">
         <div className="grid w-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {photos.map((photo) => (
-            <div
-              key={photo.id}
-              className="relative overflow-hidden group rounded-md"
-              aria-hidden="false"
+            <Link
+              key={photo.id} // always include a unique key
+              href={`/album-preview/${photo.album_id}`} // dynamic album page
+              className="relative overflow-hidden group rounded-md" // adjust styles as needed
             >
               <Image
                 src={photo.url}
@@ -91,7 +92,7 @@ export default function PhotoList() {
                   Owner: {photo.profiles?.first_name || "Unknown"}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -10,9 +10,13 @@ import TagFormDialog from "../tag/TagFormDialog";
 import LoadingState from "../LoadingState";
 import EmptyState from "../EmptyState";
 
-export default function AlbumPreview({ albumId }: { albumId: number }) {
-  // fetch data
-  // change type
+export default function AlbumDetails({
+  albumId,
+  isUserAlbum,
+}: {
+  albumId: number;
+  isUserAlbum: boolean;
+}) {
   const [photos, setPhotos] = useState<Photo[]>([]); // change type
   const [loading, setLoading] = useState(true);
   const [tags, setTags] = useState<Tag[]>([]);
@@ -100,13 +104,15 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
 
   return (
     <section>
-      <div className="flex gap-4 justify-end p-4">
-        <TagFormDialog tags={tags} onTagCreate={handleTagCreated} />
-        <AddPhotoDialog
-          albumId={String(albumId)}
-          onPhotoAdded={handlePhotoAdded}
-        />
-      </div>
+      {isUserAlbum && (
+        <div className="flex gap-4 justify-end p-4">
+          <TagFormDialog tags={tags} onTagCreate={handleTagCreated} />
+          <AddPhotoDialog
+            albumId={String(albumId)}
+            onPhotoAdded={handlePhotoAdded}
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         {photos.map((photo) => (
@@ -120,14 +126,14 @@ export default function AlbumPreview({ albumId }: { albumId: number }) {
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               fill
             />
-
-            {/* Optional hover dark overlay (if you still want it) */}
             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-              <PhotoFormDialog
-                photo={photo}
-                setPhotos={setPhotos}
-                tags={tags}
-              />
+              {isUserAlbum && (
+                <PhotoFormDialog
+                  photo={photo}
+                  setPhotos={setPhotos}
+                  tags={tags}
+                />
+              )}
               <p className="text-white text-lg font-semibold">{photo.title}</p>
             </div>
           </div>
