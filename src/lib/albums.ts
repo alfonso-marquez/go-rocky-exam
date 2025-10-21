@@ -29,13 +29,12 @@ const getAlbum = async (id: number) => {
     .single();
   if (error) {
     if (error.code === "PGRST116") {
-      console.error(new Error(error.message || "404 Not Found"));
-      // redirect("/albums");
+      return { data: null, error: error.message || "404 Not Found" };
     } else {
-      console.error(new Error(error.message || "Internal Server Error"));
+      return { data: null, error: error.message || "Internal Server Error" };
     }
   }
-  return data;
+  return { data, error: null };
 };
 
 const createAlbum = async (

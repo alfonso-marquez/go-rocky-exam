@@ -2,27 +2,37 @@ import AlbumDetails from "@/components/album/AlbumDetails";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getAlbum } from "@/lib/albums";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import React from "react";
+
+interface AlbumPreviewParams {
+  id: string;
+}
 
 export default async function AlbumPreviewPage({
   params,
 }: {
-  params: { id: string };
+  params: AlbumPreviewParams;
 }) {
+  const albumId = Number(params.id);
+
+  const { data: album, error: albumError } = await getAlbum(albumId);
+
+  // Handle 404
+  if (albumError) {
+    return notFound();
+  }
+
+  let isUserAlbum = false;
+
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data?.user) {
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !authData?.user) {
     redirect("/login");
   }
 
-  // Handle await params NextJS
-  const albumId = Number(params.id);
-  const album = await getAlbum(albumId);
-  console.log(album);
-  let isUserAlbum = false;
-
-  if (data.user.id == album.user_id) {
+  if (authData.user.id === album.user_id) {
     isUserAlbum = true;
   }
 
@@ -32,13 +42,17 @@ export default async function AlbumPreviewPage({
         <div className="w-full max-w-6xl">
           <Card className="w-full shadow-md">
             <CardHeader className="text-center">
-              <h1 className="text-2xl font-bold text-gray-800">{album.name}</h1>
-              <h2 className="text-gray-600 text-base">{album.description}</h2>
-              {isUserAlbum && (
-                <h3 className="text-gray-600 text-sm">
-                  You created this album
-                </h3>
-              )}
+              <h1 className="text-2xl font-bold text-gray-800">
+                {album?.name || "Album name"}
+              </h1>
+              <h2 className="text-gray-600 text-base">
+                {album?.description || "Album description"}
+              </h2>
+              <h3 className="text-gray-600 text-sm">
+                {isUserAlbum
+                  ? "You created this album"
+                  : `Created by ${album?.profiles?.first_name || ""} ${album?.profiles?.first_name || ""}`}
+              </h3>
             </CardHeader>
           </Card>
 
