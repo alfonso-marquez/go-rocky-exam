@@ -7,7 +7,6 @@ import AddPhotoDialog from "../photo/AddPhotoDialog";
 import { Photo, Tag } from "../photo/types";
 import PhotoFormDialog from "../photo/PhotoFormDialog";
 import TagFormDialog from "../tag/TagFormDialog";
-import LoadingState from "../LoadingState";
 import EmptyState from "../EmptyState";
 
 export default function AlbumDetails({
