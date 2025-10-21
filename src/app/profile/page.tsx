@@ -16,6 +16,14 @@ export default async function ProfilePage() {
     .eq("id", profileId)
     .single();
 
+  const created_at = new Date(profile.data.created_at);
+  const formattedDate = created_at.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  profile.data.created_at = formattedDate;
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12 px-6">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-md p-8 text-center">
@@ -27,11 +35,9 @@ export default async function ProfilePage() {
         </div>
 
         <div className="border-t border-gray-200 pt-4">
-          <p className="text-sm text-gray-500">
-            User ID:{" "}
-            <span className="font-medium text-gray-700">
-              {profile.data.id || "N/A"}
-            </span>
+          <p className="text-md text-gray-500">
+            Joined:{" "}
+            <span className="font-medium text-gray-700">{formattedDate}</span>
           </p>
         </div>
 

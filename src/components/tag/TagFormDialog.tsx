@@ -58,8 +58,8 @@ export default function TagFormDialog({
 
       // Optionally update local state to show the new tag
       // setTags((prev: Tag[]) => [...prev, newTag]);
-    } catch (error) {
-      console.error(error instanceof Error ? error.message : "Unknown error");
+    } catch {
+      toast.error("Tag Creation failed. Please contact support.");
     } finally {
       setLoading(false);
       setName("");

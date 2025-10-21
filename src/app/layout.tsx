@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { createClient } from "@/utils/supabase/server";
 import { Navbar } from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default async function RootLayout({
         <Navbar user={userData} />
         {children}
         <Toaster richColors position="top-right" />
+        <Footer />
       </body>
     </html>
   );
