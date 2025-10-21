@@ -18,7 +18,6 @@ import EditFormDialog from "./EditFormDialog";
 import { Album } from "./types";
 import Image from "next/image";
 import AlbumDeleteDialog from "./AlbumDeleteDialog";
-import LoadingState from "../LoadingState";
 import EmptyState from "../EmptyState";
 
 type AlbumListProps = {
@@ -36,10 +35,6 @@ export default function AlbumList({
 }: AlbumListProps) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedId, setSelectedId] = useState("");
-
-  if (loading) {
-    return <LoadingState count={3} height={300} width={250} />;
-  }
 
   if (!loading && albums.length === 0) {
     return <EmptyState type="album" />;

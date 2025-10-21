@@ -5,22 +5,24 @@ export default function LoadingState({
   width = 400,
   count = 6,
   isCentered = false,
+  isAlbums = false,
 }: {
   height?: number;
   width?: number;
   count?: number;
   isCentered?: boolean;
+  isAlbums?: boolean
 }) {
   return (
     <div className="container mx-auto px-4">
       <div
         style={{ justifyContent: isCentered ? "center" : "flex-start" }}
-        className="flex flex-wrap justify-center gap-6 "
+        className={isAlbums ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" : "flex flex-wrap justify-center gap-4"}
       >
         {Array.from({ length: count }).map((_, idx) => (
           <div key={idx} className="space-y-2 max-w-[400px]">
             <Skeleton
-              style={{ height: `${height}px`, width: `${width}px` }}
+              style={{ minHeight: `${height}px`, minWidth: `${width}px` }}
               className=" rounded-md"
             />
           </div>

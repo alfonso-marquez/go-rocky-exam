@@ -22,10 +22,11 @@ export default function Loading() {
           <CardContent>
             <div className="container mx-auto p-6">
               <LoadingState
-                height={370}
-                width={220}
+                height={310}
+                width={230}
                 isCentered={false}
                 count={4}
+                isAlbums={true}
               />
             </div>
           </CardContent>

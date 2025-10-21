@@ -83,10 +83,6 @@ export default function AlbumDetails({
     setPhotos((prev) => [newPhoto, ...prev]);
   };
 
-  if (loading) {
-    return <LoadingState count={3} width={200} />;
-  }
-
   if (!loading && photos.length === 0) {
     return (
       <>

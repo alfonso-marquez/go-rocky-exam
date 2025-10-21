@@ -38,10 +38,10 @@ export default async function AlbumPreviewPage({
 
   return (
     <>
-      <div className="font-sans flex flex-col items-center justify-center min-w-[320px] w-full px-4 sm:px-8 lg:px-12 py-10 sm:py-16 gap-10 max-w-7xl mx-auto mt-10">
+      <div className="flex flex-col items-center justify-center min-w-[320px] w-full px-4 sm:px-8 lg:px-12 py-10 sm:py-16 gap-10 max-w-7xl mx-auto mt-10">
         <div className="w-full max-w-6xl">
           <Card className="w-full shadow-md">
-            <CardHeader className="">
+            <CardHeader>
               <h1 className="text-2xl font-bold text-gray-800">
                 {album?.name || "Album name"}
               </h1>
